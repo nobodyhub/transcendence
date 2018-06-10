@@ -1,4 +1,4 @@
-package com.nobodyhub.transcendence.repository;
+package com.nobodyhub.transcendence.repository.config;
 
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Session;
