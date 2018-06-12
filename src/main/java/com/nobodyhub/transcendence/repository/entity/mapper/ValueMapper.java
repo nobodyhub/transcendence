@@ -2,7 +2,9 @@ package com.nobodyhub.transcendence.repository.entity.mapper;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.codehaus.jackson.map.ObjectMapper;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -16,6 +18,7 @@ import static com.nobodyhub.transcendence.common.Tconst.dateFormatter;
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ValueMapper {
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     public static String to(Object value) {
         Class cls = value.getClass();
@@ -25,8 +28,14 @@ public final class ValueMapper {
             return ((BigDecimal) value).toPlainString();
         } else if (LocalDate.class == cls) {
             return ((LocalDate) value).format(dateFormatter);
+        } else {
+            try {
+                return objectMapper.writeValueAsString(value);
+            } catch (IOException e) {
+                throw new ValueMapperFailException(e);
+            }
         }
-        throw new UnknownTypeForMapperException(cls);
+
     }
 
     @SuppressWarnings("unchecked")
@@ -37,7 +46,18 @@ public final class ValueMapper {
             return (T) new BigDecimal(value);
         } else if (LocalDate.class == cls) {
             return (T) LocalDate.parse(value, dateFormatter);
+        } else {
+            try {
+                return objectMapper.readValue(value, cls);
+            } catch (IOException e) {
+                throw new ValueMapperFailException(e);
+            }
         }
-        throw new UnknownTypeForMapperException(cls);
+    }
+}
+
+class ValueMapperFailException extends RuntimeException {
+    ValueMapperFailException(Throwable t) {
+        super(t);
     }
 }
