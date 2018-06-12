@@ -18,4 +18,17 @@ import java.util.Map;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface ColumnMap {
+    /**
+     * Class of Map key
+     *
+     * @return
+     */
+    Class keyCls();
+
+    /**
+     * Class of Map value
+     *
+     * @return
+     */
+    Class valCls();
 }
