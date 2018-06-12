@@ -7,7 +7,6 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.nobodyhub.transcendence.repository.entity.Entity;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
@@ -17,7 +16,6 @@ import java.util.Set;
  * @author yan_h
  * @since 2018/6/10
  */
-@Repository
 public abstract class AbstractRepository {
     @Autowired
     protected Session session;
