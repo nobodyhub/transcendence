@@ -1,20 +1,17 @@
 package com.nobodyhub.transcendence.repository.entity;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import com.nobodyhub.transcendence.repository.annotation.Column;
 import com.nobodyhub.transcendence.repository.annotation.ColumnFamily;
+import com.nobodyhub.transcendence.repository.annotation.ColumnMap;
 import com.nobodyhub.transcendence.repository.annotation.Id;
 import com.nobodyhub.transcendence.repository.entity.mapper.KeyMapper;
 import com.nobodyhub.transcendence.repository.entity.mapper.ValueMapper;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 
 import java.lang.reflect.Field;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -29,71 +26,58 @@ import java.util.regex.Pattern;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class RowData {
     /**
-     * Column Family
+     * Column Family Name
      */
     @Getter
     private final String cfName;
     /**
+     * Row key column name
+     */
+    @Getter
+    private final String rowKeyName;
+    /**
      * Row Key
      */
     @Getter
-    @Setter(AccessLevel.PRIVATE)
-    private String id;
+    private final String rowKey;
     /**
      * Column key/value
      */
+    @Getter
     private Map<String, String> values = Maps.newHashMap();
 
     /**
-     * Create from an entity
+     * Create RowData <b>without</b> rowKey/values from Entity Class
+     *
+     * @param entityCls
+     * @return
+     */
+    public static <T extends Entity> RowData of(Class<T> entityCls) {
+        return of(entityCls, null);
+    }
+
+    /**
+     * Create RowData <b>with</b> rowKey/values from Entity instance
      *
      * @param entity
      * @return
      */
-    public static RowData of(Entity entity) {
-        ColumnFamily anno = entity.getClass().getAnnotation(ColumnFamily.class);
-        if (anno == null) {
-            throw new InvalidEntityException(entity.getClass());
-        }
-        RowData rowData = new RowData(anno.value());
+    public static <T extends Entity> RowData of(T entity) {
+        return of(entity.getClass(), entity);
+    }
 
-        // can have at most 1 map field
-        int nMapField = 0;
-        for (Field field : entity.getClass().getFields()) {
-            Class<?> fldClass = field.getType();
-            try {
-                Id idAnno = field.getAnnotation(Id.class);
-                if (idAnno != null) {
-                    rowData.setId(ValueMapper.to(field.get(entity)));
-                    continue;
-                }
-                Column colAnno = field.getAnnotation(Column.class);
-                if (colAnno != null) {
-                    if (fldClass.isAssignableFrom(Set.class)) {
-                        parseSetField(rowData, entity, field);
-                    } else if (fldClass.isAssignableFrom(List.class)) {
-                        parseListField(rowData, entity, field);
-                    } else if (fldClass.isAssignableFrom(Map.class)) {
-                        nMapField++;
-                        if (nMapField > 1) {
-                            throw new InvalidEntityException(entity.getClass(),
-                                    "Can have at most one @ColumnMap field!");
-                        }
-                        parseMapField(rowData, entity, field);
-                    } else {
-                        parseField(rowData, entity, field);
-                    }
-                }
-            } catch (IllegalAccessException e) {
-                throw new InvalidEntityException(entity.getClass(),
-                        e.getMessage());
-            }
-        }
-        if (rowData.getId() == null) {
-            throw new InvalidEntityException(entity.getClass(),
-                    "Missing @Id fidld!");
-        }
-        return rowData;
+    /**
+     * Get field value
+     *
+     * @param fieldName field name
+     * @param fieldCls  field value class
+     * @param <T>       type of field value
+     * @return
+     * @throws IllegalAccessException
+     */
+    public <T> T getField(String fieldName, Class<T> fieldCls) {
+        String colNm = KeyMapper.to(fieldName);
+        return ValueMapper.from(values.get(colNm), fieldCls);
     }
 
     /**
@@ -125,90 +109,45 @@ public final class RowData {
     }
 
     /**
-     * Get field value
+     * Get the normal column names(except the primary key column)
      *
-     * @param fieldName field name
-     * @param fieldCls  field value class
-     * @param <T>       type of field value
      * @return
-     * @throws IllegalAccessException
      */
-    public <T> T getField(String fieldName, Class<T> fieldCls) {
-        String colNm = KeyMapper.to(fieldName);
-        return ValueMapper.from(values.get(colNm), fieldCls);
+    public Set<String> getColumnNames() {
+        return values.keySet();
     }
 
-    /**
-     * Get values of Set field
-     *
-     * @param fieldName field name
-     * @param eCls      element Class
-     * @param <T>       element type
-     * @return
-     */
-    public <T> Set<T> getSetField(String fieldName, Class<T> eCls) {
-        Set<T> result = Sets.newHashSet();
-        String colNm = KeyMapper.to(fieldName);
-        Pattern patter = Pattern.compile("^" + colNm + "_\\d+$");
-        for (Map.Entry<String, String> entry : values.entrySet()) {
-            if (patter.matcher(entry.getKey()).matches()) {
-                result.add(ValueMapper.from(entry.getValue(), eCls));
+
+    private static void parseValues(Entity entity, RowData rowData) {
+        Class<? extends Entity> entityCls = entity.getClass();
+        // can have at most 1 map field
+        int nMapField = 0;
+        for (Field field : entityCls.getFields()) {
+            try {
+                Column colAnno = field.getAnnotation(Column.class);
+                if (colAnno != null) {
+                    parseNormalFieldValue(rowData, entity, field);
+                    continue;
+                }
+                ColumnMap colMapAnno = field.getAnnotation(ColumnMap.class);
+                if (colMapAnno != null) {
+                    nMapField++;
+                    if (nMapField > 1) {
+                        throw new InvalidEntityException(entityCls,
+                                "Can have at most one @ColumnMap field!");
+                    }
+                    parseMapFieldValue(rowData, entity, field);
+                }
+            } catch (IllegalAccessException e) {
+                throw new InvalidEntityException(entityCls,
+                        e.getMessage());
             }
         }
-        return result;
     }
 
-    /**
-     * Get values of List field
-     *
-     * @param fieldName field name
-     * @param eCls      element class
-     * @param <T>       element type
-     * @return
-     */
-    public <T> List<T> getListField(String fieldName, Class<T> eCls) {
-        List<T> result = Lists.newArrayList();
-        String colNm = KeyMapper.to(fieldName);
-        Pattern patter = Pattern.compile("^" + colNm + "_\\d+$");
-        for (Map.Entry<String, String> entry : values.entrySet()) {
-            if (patter.matcher(entry.getKey()).matches()) {
-                result.add(ValueMapper.from(entry.getValue(), eCls));
-            }
-        }
-        return result;
-    }
-
-    private static void parseSetField(RowData rowData,
-                                      Object object,
-                                      Field field) throws IllegalAccessException {
-        Set values = (Set) field.get(object);
-        String colNm = KeyMapper.to(field.getName());
-        int idx = 1;
-        for (Object value : values) {
-            rowData.addValue(
-                    field.getType(),
-                    String.format("%s_%d", colNm, idx),
-                    ValueMapper.to(value));
-        }
-    }
-
-    private static void parseListField(RowData rowData,
-                                       Object object,
-                                       Field field) throws IllegalAccessException {
-        List values = (List) field.get(object);
-        String colNm = KeyMapper.to(field.getName());
-        int idx = 1;
-        for (Object value : values) {
-            rowData.addValue(
-                    field.getType(),
-                    String.format("%s_%d", colNm, idx),
-                    ValueMapper.to(value));
-        }
-    }
-
-    private static void parseMapField(RowData rowData,
-                                      Object object,
-                                      Field field) throws IllegalAccessException {
+    private static void parseMapFieldValue(RowData rowData,
+                                           Object object,
+                                           Field field) throws IllegalAccessException {
         Map values = (Map) field.get(object);
         String colNm = KeyMapper.to(field.getName());
         for (Object key : values.keySet()) {
@@ -219,9 +158,9 @@ public final class RowData {
         }
     }
 
-    private static void parseField(RowData rowData,
-                                   Object object,
-                                   Field field) throws IllegalAccessException {
+    private static void parseNormalFieldValue(RowData rowData,
+                                              Object object,
+                                              Field field) throws IllegalAccessException {
         rowData.addValue(
                 field.getType(),
                 KeyMapper.to(field.getName()),
@@ -239,6 +178,46 @@ public final class RowData {
         }
         values.put(key, value);
     }
+
+    private static <T extends Entity> RowData of(Class<? extends Entity> entityCls, T entity) {
+        String cfName = getColumnFamilyName(entityCls);
+        Field rowkey = getRowKeyColumn(entityCls);
+        RowData rowData = null;
+        try {
+            rowData = new RowData(cfName,
+                    KeyMapper.to(rowkey.getName()),
+                    ValueMapper.to(rowkey.get(entity))
+            );
+            if (entity != null) {
+                parseValues(entity, rowData);
+            }
+
+        } catch (IllegalAccessException e) {
+            throw new InvalidEntityException(entityCls,
+                    e.getMessage());
+        }
+        return rowData;
+    }
+
+    private static String getColumnFamilyName(Class<? extends Entity> cls) {
+        ColumnFamily anno = cls.getAnnotation(ColumnFamily.class);
+        if (anno == null) {
+            throw new InvalidEntityException(cls);
+        }
+        return anno.value();
+    }
+
+    private static Field getRowKeyColumn(Class<? extends Entity> cls) {
+        for (Field field : cls.getFields()) {
+            Id idAnno = field.getAnnotation(Id.class);
+            if (idAnno != null) {
+                return field;
+            }
+        }
+        throw new InvalidEntityException(cls,
+                "Missing @Id fidld!");
+    }
+
 }
 
 class InvalidEntityException extends RuntimeException {
