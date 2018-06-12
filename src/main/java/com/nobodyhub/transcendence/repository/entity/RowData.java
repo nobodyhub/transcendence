@@ -1,6 +1,7 @@
 package com.nobodyhub.transcendence.repository.entity;
 
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.nobodyhub.transcendence.repository.annotation.Column;
 import com.nobodyhub.transcendence.repository.annotation.ColumnFamily;
 import com.nobodyhub.transcendence.repository.annotation.ColumnMap;
@@ -14,8 +15,6 @@ import lombok.RequiredArgsConstructor;
 import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * An intermediate structure converting {@link Entity} to Cassandra row
@@ -67,45 +66,52 @@ public final class RowData {
     }
 
     /**
-     * Get field value
+     * Fill the field of entity with value
      *
-     * @param fieldName field name
-     * @param fieldCls  field value class
-     * @param <T>       type of field value
-     * @return
-     * @throws IllegalAccessException
+     * @param field
+     * @param entity
      */
-    public <T> T getField(String fieldName, Class<T> fieldCls) {
-        String colNm = KeyMapper.to(fieldName);
-        return ValueMapper.from(values.get(colNm), fieldCls);
+    public void fillField(Field field, Entity entity) {
+        try {
+            Column colAnno = field.getAnnotation(Column.class);
+            if (colAnno != null) {
+                String colNm = KeyMapper.to(field.getName());
+                field.set(entity,
+                        ValueMapper.from(values.get(colNm), field.getType()));
+                return;
+            }
+            ColumnMap colMapAnno = field.getAnnotation(ColumnMap.class);
+            if (colMapAnno != null) {
+                //get empty map, with only keys but null values
+                Map mapField = (Map) field.get(entity);
+                // convert keyset to column names
+                Set<String> colNames = Sets.newHashSet();
+                for (Object key : mapField.keySet()) {
+                    colNames.add(KeyMapper.to(key));
+                }
+                //read values and fill the map
+                for (Map.Entry<String, String> entry : values.entrySet()) {
+                    if (colNames.contains(entry.getKey())) {
+                        mapField.put(
+                                KeyMapper.from(entry.getKey(), colMapAnno.keyCls()),
+                                ValueMapper.from(entry.getValue(), colMapAnno.valCls()));
+                    }
+                }
+            }
+        } catch (IllegalAccessException e) {
+            throw new InvalidEntityException(entity.getClass(),
+                    e.getMessage());
+        }
     }
 
     /**
-     * Get values of Map field
+     * Add new value to values
      *
-     * @param fieldName field name
-     * @param kCls      Class of map key
-     * @param vCls      Class of map value
-     * @param <K>       type of map key
-     * @param <V>       type of map value
-     * @return
-     * @throws IllegalAccessException
+     * @param key
+     * @param value
      */
-    public <K, V> Map<K, V> getMapField(String fieldName,
-                                        Class<K> kCls,
-                                        Class<V> vCls) {
-        Map<K, V> result = Maps.newHashMap();
-        String colNm = KeyMapper.to(fieldName);
-        Pattern patter = Pattern.compile("^" + colNm + "_(.+)$");
-        for (Map.Entry<String, String> entry : values.entrySet()) {
-            Matcher matcher = patter.matcher(entry.getKey());
-            if (matcher.matches()) {
-                result.put(
-                        KeyMapper.from(matcher.group(1), kCls),
-                        ValueMapper.from(entry.getValue(), vCls));
-            }
-        }
-        return result;
+    public void addValue(String key, String value) {
+        values.put(key, value);
     }
 
     /**
@@ -153,7 +159,7 @@ public final class RowData {
         for (Object key : values.keySet()) {
             rowData.addValue(
                     field.getType(),
-                    String.format("%s_%s", colNm, KeyMapper.to(key)),
+                    KeyMapper.to(key),
                     ValueMapper.to(values.get(key)));
         }
     }
