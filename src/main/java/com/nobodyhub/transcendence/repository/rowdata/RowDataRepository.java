@@ -18,30 +18,32 @@ import java.lang.reflect.Field;
 public class RowDataRepository extends AbstractRepository {
 
     @Override
-    protected void createTable(Class<Entity> entityCls) {
+    public void createTable(Class<? extends Entity> entityCls) {
         RowData rowData = RowData.of(entityCls);
         this.session.execute(createTableCql(rowData.getCfName(), rowData.getRowKeyName()));
     }
 
     @Override
-    protected void dropTable(Class<Entity> entityCls) {
+    public void dropTable(Class<? extends Entity> entityCls) {
         RowData rowData = RowData.of(entityCls);
         this.session.execute(dropTableCql(rowData.getCfName()));
     }
 
     @Override
-    protected void update(Entity entity) {
+    public void update(Entity entity) {
         RowData rowData = RowData.of(entity);
         addColumns(rowData.getCfName(), rowData.getColumnNames());
-        this.session.execute(updateCql(rowData.getCfName(),
-                rowData.getRowKeyName(),
-                rowData.getRowKey(),
-                rowData.getValues())
-        );
+        if (!rowData.getValues().isEmpty()) {
+            this.session.execute(updateCql(rowData.getCfName(),
+                    rowData.getRowKeyName(),
+                    rowData.getRowKey(),
+                    rowData.getValues())
+            );
+        }
     }
 
     @Override
-    protected void query(Entity entity) {
+    public void query(Entity entity) {
         RowData rowData = RowData.of(entity);
         addColumns(rowData.getCfName(), rowData.getColumnNames());
         ResultSet resultSet = this.session.execute(selectCql(rowData.getCfName(),
