@@ -22,11 +22,6 @@ public class ValueMapperTest {
                 ValueMapper.to(LocalDate.of(2018, 6, 19)));
     }
 
-    @Test(expected = ValueMapperFailException.class)
-    public void testTo_() {
-        ValueMapper.to(new Object());
-    }
-
     @Test
     public void testFrom() {
         assertEquals("string",
@@ -36,10 +31,5 @@ public class ValueMapperTest {
         assertEquals(LocalDate.of(2018, 6, 19),
                 ValueMapper.from("20180619", LocalDate.class));
 
-    }
-
-    @Test(expected = ValueMapperFailException.class)
-    public void testFrom_() {
-        ValueMapper.from("20180619", Object.class);
     }
 }
