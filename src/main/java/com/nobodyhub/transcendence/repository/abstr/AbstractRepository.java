@@ -85,7 +85,7 @@ public abstract class AbstractRepository {
      * @return
      */
     protected String dropTableCql(String table) {
-        return String.format(" DROP TABLE %s ", table);
+        return String.format(" DROP TABLE IF EXISTS %s ", table);
     }
 
     /**
