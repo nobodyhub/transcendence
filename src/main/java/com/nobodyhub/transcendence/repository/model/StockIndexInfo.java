@@ -22,6 +22,9 @@ import java.util.Map;
 @EqualsAndHashCode(callSuper = true)
 @ColumnFamily("stock_info_index")
 public class StockIndexInfo extends Entity {
+    /**
+     * daily index information
+     */
     @ColumnMap(keyCls = LocalDate.class, valCls = StockIndexSet.class)
     protected Map<LocalDate, StockIndexSet> indices = Maps.newHashMap();
 

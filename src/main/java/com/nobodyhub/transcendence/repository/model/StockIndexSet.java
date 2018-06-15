@@ -91,7 +91,7 @@ public class StockIndexSet {
      */
     private BigDecimal ub;
     private BigDecimal lb;
-    private BigDecimal mid;
+    private BigDecimal mb;
     /**
      * KDJ(9,3,3), 随机指标
      *
@@ -129,5 +129,5 @@ public class StockIndexSet {
      * PSY(12,6), 心理线
      */
     private BigDecimal psy;
-    private BigDecimal psym;
+    private BigDecimal psyma;
 }
