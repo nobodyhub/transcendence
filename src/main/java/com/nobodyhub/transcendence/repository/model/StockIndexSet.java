@@ -1,4 +1,4 @@
-package com.nobodyhub.transcendence.model;
+package com.nobodyhub.transcendence.repository.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.*;

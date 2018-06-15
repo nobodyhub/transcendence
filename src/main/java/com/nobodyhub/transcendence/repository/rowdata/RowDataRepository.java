@@ -3,8 +3,8 @@ package com.nobodyhub.transcendence.repository.rowdata;
 import com.datastax.driver.core.ColumnDefinitions;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
-import com.nobodyhub.transcendence.model.abstr.Entity;
 import com.nobodyhub.transcendence.repository.abstr.AbstractRepository;
+import com.nobodyhub.transcendence.repository.model.abstr.Entity;
 import com.nobodyhub.transcendence.repository.util.ClassHelper;
 import org.springframework.stereotype.Repository;
 

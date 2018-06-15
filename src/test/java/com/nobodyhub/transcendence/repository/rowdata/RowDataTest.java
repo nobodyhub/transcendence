@@ -1,9 +1,9 @@
 package com.nobodyhub.transcendence.repository.rowdata;
 
-import com.nobodyhub.transcendence.model.StockBasicInfo;
-import com.nobodyhub.transcendence.model.StockIndexInfo;
-import com.nobodyhub.transcendence.model.StockIndexSet;
 import com.nobodyhub.transcendence.repository.mapper.KeyMapper;
+import com.nobodyhub.transcendence.repository.model.StockBasicInfo;
+import com.nobodyhub.transcendence.repository.model.StockIndexInfo;
+import com.nobodyhub.transcendence.repository.model.StockIndexSet;
 import com.nobodyhub.transcendence.repository.util.ClassHelper;
 import org.junit.Before;
 import org.junit.Test;

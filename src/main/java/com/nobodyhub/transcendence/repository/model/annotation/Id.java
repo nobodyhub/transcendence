@@ -1,6 +1,6 @@
-package com.nobodyhub.transcendence.model.annotation;
+package com.nobodyhub.transcendence.repository.model.annotation;
 
-import com.nobodyhub.transcendence.model.abstr.Entity;
+import com.nobodyhub.transcendence.repository.model.abstr.Entity;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

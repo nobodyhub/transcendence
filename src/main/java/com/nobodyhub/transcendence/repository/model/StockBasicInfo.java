@@ -1,8 +1,8 @@
-package com.nobodyhub.transcendence.model;
+package com.nobodyhub.transcendence.repository.model;
 
-import com.nobodyhub.transcendence.model.abstr.Entity;
-import com.nobodyhub.transcendence.model.annotation.Column;
-import com.nobodyhub.transcendence.model.annotation.ColumnFamily;
+import com.nobodyhub.transcendence.repository.model.abstr.Entity;
+import com.nobodyhub.transcendence.repository.model.annotation.Column;
+import com.nobodyhub.transcendence.repository.model.annotation.ColumnFamily;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

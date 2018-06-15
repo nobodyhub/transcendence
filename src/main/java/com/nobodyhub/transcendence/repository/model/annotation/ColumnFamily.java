@@ -1,6 +1,6 @@
-package com.nobodyhub.transcendence.model.annotation;
+package com.nobodyhub.transcendence.repository.model.annotation;
 
-import com.nobodyhub.transcendence.model.abstr.Entity;
+import com.nobodyhub.transcendence.repository.model.abstr.Entity;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -8,12 +8,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotate field as column of {@link Entity}
+ * Annotate class as {@link Entity}
  *
  * @author yan_h
  * @since 2018/6/10
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
-public @interface Column {
+@Target(ElementType.TYPE)
+public @interface ColumnFamily {
+    String value();
 }

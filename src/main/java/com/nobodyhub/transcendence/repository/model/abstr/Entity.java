@@ -1,6 +1,6 @@
-package com.nobodyhub.transcendence.model.abstr;
+package com.nobodyhub.transcendence.repository.model.abstr;
 
-import com.nobodyhub.transcendence.model.annotation.Id;
+import com.nobodyhub.transcendence.repository.model.annotation.Id;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

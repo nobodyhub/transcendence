@@ -2,13 +2,13 @@ package com.nobodyhub.transcendence.repository.rowdata;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.nobodyhub.transcendence.model.abstr.Entity;
-import com.nobodyhub.transcendence.model.annotation.Column;
-import com.nobodyhub.transcendence.model.annotation.ColumnFamily;
-import com.nobodyhub.transcendence.model.annotation.ColumnMap;
-import com.nobodyhub.transcendence.model.annotation.Id;
 import com.nobodyhub.transcendence.repository.mapper.KeyMapper;
 import com.nobodyhub.transcendence.repository.mapper.ValueMapper;
+import com.nobodyhub.transcendence.repository.model.abstr.Entity;
+import com.nobodyhub.transcendence.repository.model.annotation.Column;
+import com.nobodyhub.transcendence.repository.model.annotation.ColumnFamily;
+import com.nobodyhub.transcendence.repository.model.annotation.ColumnMap;
+import com.nobodyhub.transcendence.repository.model.annotation.Id;
 import com.nobodyhub.transcendence.repository.util.ClassHelper;
 import lombok.AccessLevel;
 import lombok.Getter;

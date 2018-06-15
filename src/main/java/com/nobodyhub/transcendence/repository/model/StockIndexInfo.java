@@ -1,9 +1,9 @@
-package com.nobodyhub.transcendence.model;
+package com.nobodyhub.transcendence.repository.model;
 
 import com.google.common.collect.Maps;
-import com.nobodyhub.transcendence.model.abstr.Entity;
-import com.nobodyhub.transcendence.model.annotation.ColumnFamily;
-import com.nobodyhub.transcendence.model.annotation.ColumnMap;
+import com.nobodyhub.transcendence.repository.model.abstr.Entity;
+import com.nobodyhub.transcendence.repository.model.annotation.ColumnFamily;
+import com.nobodyhub.transcendence.repository.model.annotation.ColumnMap;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
