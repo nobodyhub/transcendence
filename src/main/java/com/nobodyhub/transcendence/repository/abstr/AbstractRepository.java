@@ -13,6 +13,10 @@ import java.util.Map;
 import java.util.Set;
 
 /**
+ * Repository for basic db operations
+ * <b>Note</b>:
+ * the column key and column value are both of string type
+ *
  * @author yan_h
  * @since 2018/6/10
  */
@@ -53,10 +57,10 @@ public abstract class AbstractRepository {
      * @param column column name(key)
      * @return
      */
-    private String addColumnCql(String table, String column) {
+    protected String addColumnCql(String table, String column) {
         StringBuilder sb = new StringBuilder();
         sb.append(String.format(" ALTER TABLE %s ", table));
-        sb.append(String.format(" ADD %s decimal ", column));
+        sb.append(String.format(" ADD %s text ", column));
         return sb.toString();
     }
 
