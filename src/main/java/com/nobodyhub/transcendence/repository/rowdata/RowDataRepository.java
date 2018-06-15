@@ -5,6 +5,7 @@ import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.nobodyhub.transcendence.model.abstr.Entity;
 import com.nobodyhub.transcendence.repository.abstr.AbstractRepository;
+import com.nobodyhub.transcendence.repository.util.ClassHelper;
 import org.springframework.stereotype.Repository;
 
 import java.lang.reflect.Field;
@@ -55,7 +56,7 @@ public class RowDataRepository extends AbstractRepository {
                 rowData.addValue(colName, row.getString(colName));
             }
         }
-        for (Field field : entity.getClass().getFields()) {
+        for (Field field : ClassHelper.getFields(entity.getClass())) {
             rowData.fillField(field, entity);
         }
     }
