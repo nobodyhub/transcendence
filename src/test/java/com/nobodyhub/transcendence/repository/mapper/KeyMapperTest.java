@@ -1,4 +1,4 @@
-package com.nobodyhub.transcendence.repository.entity.mapper;
+package com.nobodyhub.transcendence.repository.mapper;
 
 import org.junit.Test;
 

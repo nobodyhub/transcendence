@@ -5,7 +5,7 @@ import com.datastax.driver.core.Session;
 import com.datastax.driver.core.exceptions.InvalidQueryException;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
-import com.nobodyhub.transcendence.repository.entity.Entity;
+import com.nobodyhub.transcendence.model.abstr.Entity;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;

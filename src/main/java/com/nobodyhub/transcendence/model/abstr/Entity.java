@@ -1,6 +1,6 @@
-package com.nobodyhub.transcendence.repository.entity;
+package com.nobodyhub.transcendence.model.abstr;
 
-import com.nobodyhub.transcendence.repository.annotation.Id;
+import com.nobodyhub.transcendence.model.annotation.Id;
 
 /**
  * Abstract class of entity in Cassandra DB
