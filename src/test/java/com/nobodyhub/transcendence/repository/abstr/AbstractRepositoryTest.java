@@ -1,8 +1,6 @@
 package com.nobodyhub.transcendence.repository.abstr;
 
-import com.nobodyhub.transcendence.repository.abstr.table.TableOperation;
 import com.nobodyhub.transcendence.repository.config.CassandraConfig;
-import org.junit.After;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -16,12 +14,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = CassandraConfig.class)
 @TestPropertySource(locations = "classpath:test.properties")
-public abstract class AbstractRepositoryTest<T extends TableOperation> {
+public abstract class AbstractRepositoryTest<T extends AbstractRepository> {
     @Autowired
     protected T repository;
 
-    @After
-    public void tearDown() {
-        repository.truncateTable();
-    }
 }
