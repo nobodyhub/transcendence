@@ -9,9 +9,11 @@ import com.nobodyhub.transcendence.model.annotation.ColumnMap;
 import com.nobodyhub.transcendence.model.annotation.Id;
 import com.nobodyhub.transcendence.repository.mapper.KeyMapper;
 import com.nobodyhub.transcendence.repository.mapper.ValueMapper;
+import com.nobodyhub.transcendence.repository.util.ClassHelper;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import java.lang.reflect.Field;
 import java.util.Map;
@@ -39,7 +41,8 @@ public final class RowData {
      * Row Key
      */
     @Getter
-    private final String rowKey;
+    @Setter
+    private String rowKey;
     /**
      * Column key/value
      */
@@ -67,13 +70,23 @@ public final class RowData {
     }
 
     /**
-     * Fill the field of entity with value
+     * Fill the field of entity with corresponding values in {@link this#values}
+     * <p>
+     * in case of the Field is annotated with {@link ColumnMap}
+     * keys should be included in the result entity in order to get values from {@link this#values}
      *
      * @param field
      * @param entity
      */
     public void fillField(Field field, Entity entity) {
         try {
+            Id idAnno = field.getAnnotation(Id.class);
+            if (idAnno != null) {
+                field.set(entity,
+                        ValueMapper.from(rowKey, field.getType()));
+                return;
+            }
+
             Column colAnno = field.getAnnotation(Column.class);
             if (colAnno != null) {
                 String colNm = KeyMapper.to(field.getName());
@@ -116,6 +129,16 @@ public final class RowData {
     }
 
     /**
+     * get value from values for given key
+     *
+     * @param key
+     * @return
+     */
+    public String getValue(String key) {
+        return values.get(key);
+    }
+
+    /**
      * Get the normal column names(except the primary key column)
      *
      * @return
@@ -129,7 +152,7 @@ public final class RowData {
         Class<? extends Entity> entityCls = entity.getClass();
         // can have at most 1 map field
         int nMapField = 0;
-        for (Field field : entityCls.getFields()) {
+        for (Field field : ClassHelper.getFields(entityCls)) {
             try {
                 Column colAnno = field.getAnnotation(Column.class);
                 if (colAnno != null) {
@@ -192,10 +215,9 @@ public final class RowData {
         RowData rowData = null;
         try {
             rowData = new RowData(cfName,
-                    KeyMapper.to(rowkey.getName()),
-                    ValueMapper.to(rowkey.get(entity))
-            );
+                    KeyMapper.to(rowkey.getName()));
             if (entity != null) {
+                rowData.setRowKey(ValueMapper.to(rowkey.get(entity)));
                 parseValues(entity, rowData);
             }
 
@@ -215,7 +237,7 @@ public final class RowData {
     }
 
     private static Field getRowKeyColumn(Class<? extends Entity> cls) {
-        for (Field field : cls.getFields()) {
+        for (Field field : ClassHelper.getFields(cls)) {
             Id idAnno = field.getAnnotation(Id.class);
             if (idAnno != null) {
                 return field;
@@ -224,7 +246,6 @@ public final class RowData {
         throw new InvalidEntityException(cls,
                 "Missing @Id fidld!");
     }
-
 }
 
 class InvalidEntityException extends RuntimeException {

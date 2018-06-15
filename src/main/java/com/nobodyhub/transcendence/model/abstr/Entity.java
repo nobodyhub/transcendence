@@ -1,6 +1,7 @@
 package com.nobodyhub.transcendence.model.abstr;
 
 import com.nobodyhub.transcendence.model.annotation.Id;
+import lombok.Data;
 
 /**
  * Abstract class of entity in Cassandra DB
@@ -8,10 +9,11 @@ import com.nobodyhub.transcendence.model.annotation.Id;
  * @author yan_h
  * @since 2018/6/11
  */
+@Data
 public abstract class Entity {
     /**
      * Row key
      */
     @Id
-    private String id;
+    protected String id;
 }
