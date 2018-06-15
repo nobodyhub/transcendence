@@ -1,10 +1,7 @@
 package com.nobodyhub.transcendence.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -28,6 +25,7 @@ public class StockIndexSet {
     /**
      * 交易日期
      */
+    @Setter(AccessLevel.PRIVATE)
     private LocalDate date;
     /**
      * 成交量

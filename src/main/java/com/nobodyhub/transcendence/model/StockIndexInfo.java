@@ -5,6 +5,7 @@ import com.nobodyhub.transcendence.model.abstr.Entity;
 import com.nobodyhub.transcendence.model.annotation.ColumnFamily;
 import com.nobodyhub.transcendence.model.annotation.ColumnMap;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.time.LocalDate;
 import java.util.Map;
@@ -18,6 +19,7 @@ import java.util.Map;
  * @since 2018/6/15
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 @ColumnFamily("stock_info_index")
 public class StockIndexInfo extends Entity {
     @ColumnMap(keyCls = LocalDate.class, valCls = StockIndexSet.class)
