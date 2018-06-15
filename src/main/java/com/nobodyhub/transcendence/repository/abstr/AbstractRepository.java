@@ -28,7 +28,7 @@ public abstract class AbstractRepository {
 
     protected abstract void createTable(Class<Entity> entityCls);
 
-    protected abstract void truncateTable(Class<Entity> entityCls);
+    protected abstract void dropTable(Class<Entity> entityCls);
 
     protected abstract void update(Entity entity);
 
@@ -84,8 +84,8 @@ public abstract class AbstractRepository {
      * @param table table name
      * @return
      */
-    protected String truncateTableCql(String table) {
-        return String.format(" TRUNCATE %s ", table);
+    protected String dropTableCql(String table) {
+        return String.format(" DROP TABLE %s ", table);
     }
 
     /**

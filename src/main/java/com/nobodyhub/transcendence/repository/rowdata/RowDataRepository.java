@@ -24,9 +24,9 @@ public class RowDataRepository extends AbstractRepository {
     }
 
     @Override
-    protected void truncateTable(Class<Entity> entityCls) {
+    protected void dropTable(Class<Entity> entityCls) {
         RowData rowData = RowData.of(entityCls);
-        this.session.execute(truncateTableCql(rowData.getCfName()));
+        this.session.execute(dropTableCql(rowData.getCfName()));
     }
 
     @Override

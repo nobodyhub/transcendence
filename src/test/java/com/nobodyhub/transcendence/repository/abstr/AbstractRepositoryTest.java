@@ -21,8 +21,8 @@ public class AbstractRepositoryTest {
                 repository.addColumnCql("tbl", "col"));
         assertEquals(" CREATE TABLE IF NOT EXISTS tbl (  idCol text PRIMARY KEY  ) ",
                 repository.createTableCql("tbl", "idCol"));
-        assertEquals(" TRUNCATE tbl ",
-                repository.truncateTableCql("tbl"));
+        assertEquals(" DROP TABLE tbl ",
+                repository.dropTableCql("tbl"));
         Map<String, String> values = Maps.newTreeMap();
         values.put("val1", "20180615");
         values.put("DEC123", "20180615");
