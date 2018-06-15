@@ -2,9 +2,7 @@ package com.nobodyhub.transcendence.repository.entity.mapper;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.codehaus.jackson.map.ObjectMapper;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -18,8 +16,12 @@ import static com.nobodyhub.transcendence.common.Tconst.dateFormatter;
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ValueMapper {
-    private static final ObjectMapper objectMapper = new ObjectMapper();
-
+    /**
+     * Convert object to its string representive as column value
+     *
+     * @param value
+     * @return
+     */
     public static String to(Object value) {
         Class cls = value.getClass();
         if (String.class == cls) {
@@ -28,16 +30,19 @@ public final class ValueMapper {
             return ((BigDecimal) value).toPlainString();
         } else if (LocalDate.class == cls) {
             return ((LocalDate) value).format(dateFormatter);
-        } else {
-            try {
-                return objectMapper.writeValueAsString(value);
-            } catch (IOException e) {
-                throw new ValueMapperFailException(e);
-            }
         }
+        throw new ValueMapperFailException(cls);
 
     }
 
+    /**
+     * Convert string to given type as column value
+     *
+     * @param value
+     * @param cls
+     * @param <T>
+     * @return
+     */
     @SuppressWarnings("unchecked")
     public static <T> T from(String value, Class<T> cls) {
         if (String.class == cls) {
@@ -46,18 +51,14 @@ public final class ValueMapper {
             return (T) new BigDecimal(value);
         } else if (LocalDate.class == cls) {
             return (T) LocalDate.parse(value, dateFormatter);
-        } else {
-            try {
-                return objectMapper.readValue(value, cls);
-            } catch (IOException e) {
-                throw new ValueMapperFailException(e);
-            }
         }
+        throw new ValueMapperFailException(cls);
     }
 }
 
 class ValueMapperFailException extends RuntimeException {
-    ValueMapperFailException(Throwable t) {
-        super(t);
+    ValueMapperFailException(Class cls) {
+        super(String.format("Can not handle type: [ %s ] to/from String!",
+                cls.getName()));
     }
 }
