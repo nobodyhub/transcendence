@@ -39,7 +39,7 @@ public final class ValueMapper {
      * @return
      */
     public static String to(Object value) {
-        if (value.getClass() == String.class) {
+        if (value == null || value.getClass() == String.class) {
             return (String) value;
         }
         try {
