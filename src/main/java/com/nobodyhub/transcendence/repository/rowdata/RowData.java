@@ -187,7 +187,6 @@ public final class RowData {
                                            Object object,
                                            Field field) throws IllegalAccessException {
         Map values = (Map) field.get(object);
-        String colNm = KeyMapper.to(field.getName());
         for (Object key : values.keySet()) {
             rowData.addValue(
                     field.getType(),

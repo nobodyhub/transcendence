@@ -9,10 +9,8 @@ import com.google.common.collect.Sets;
 import com.nobodyhub.transcendence.repository.model.abstr.Entity;
 import com.nobodyhub.transcendence.repository.model.annotation.ColumnFamily;
 import org.reflections.Reflections;
-import org.reflections.scanners.SubTypesScanner;
-import org.reflections.scanners.TypeAnnotationsScanner;
-import org.reflections.util.ClasspathHelper;
-import org.reflections.util.ConfigurationBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
@@ -33,6 +31,7 @@ import java.util.stream.Collectors;
  * @since 2018/6/10
  */
 public abstract class AbstractRepository {
+    private static final Logger logger = LoggerFactory.getLogger(AbstractRepository.class);
     @Autowired
     protected Session session;
     @Autowired
@@ -98,17 +97,8 @@ public abstract class AbstractRepository {
      */
     @PostConstruct
     public void createTableIfNotExist() {
-        new Reflections(
-                new ConfigurationBuilder()
-                        .setUrls(
-                                ClasspathHelper.forPackage("com.nobodyhub.transcendence"))
-                        .setScanners(
-                                new SubTypesScanner(),
-                                new TypeAnnotationsScanner())
-
-        );
         Reflections reflections = new Reflections(
-                "com.nobodyhub.transcendence");
+                "com.nobodyhub.transcendence.repository");
         Set<Class<? extends Entity>> entities = reflections.getSubTypesOf(Entity.class);
         entities.stream()
                 .filter(clz -> clz.isAnnotationPresent(ColumnFamily.class))
@@ -129,7 +119,9 @@ public abstract class AbstractRepository {
         StringBuilder sb = new StringBuilder();
         sb.append(String.format(" ALTER TABLE \"%s\" ", table));
         sb.append(String.format(" ADD ( %s )", Joiner.on(", ").join(colCqls)));
-        return sb.toString();
+        String cql = sb.toString();
+        logger.debug("Add Column: {}", cql);
+        return cql;
     }
 
     /**
@@ -143,7 +135,9 @@ public abstract class AbstractRepository {
         sb.append(String.format(" CREATE TABLE IF NOT EXISTS \"%s\" ( ", table));
         sb.append(String.format(" \"%s\" text PRIMARY KEY ", idColumnName));
         sb.append(" ) ");
-        return sb.toString();
+        String cql = sb.toString();
+        logger.debug("Create Table: {}", cql);
+        return cql;
     }
 
     /**
@@ -153,7 +147,9 @@ public abstract class AbstractRepository {
      * @return
      */
     protected String dropTableCql(String table) {
-        return String.format(" DROP TABLE IF EXISTS \"%s\" ", table);
+        String cql = String.format(" DROP TABLE IF EXISTS \"%s\" ", table);
+        logger.debug("Drop Table: {}", cql);
+        return cql;
     }
 
     /**
@@ -184,7 +180,9 @@ public abstract class AbstractRepository {
         }
         sb.append(Joiner.on(", ").join(assignments));
         sb.append(String.format(" WHERE \"%s\"='%s'", rowKeyName, rowKey));
-        return sb.toString();
+        String cql = sb.toString();
+        logger.debug("Update Data: {}", cql);
+        return cql;
     }
 
     /**
@@ -210,6 +208,8 @@ public abstract class AbstractRepository {
         if (rowKey != null) {
             sb.append(String.format(" WHERE \"%s\"='%s' ", rowKeyName, rowKey));
         }
-        return sb.toString();
+        String cql = sb.toString();
+        logger.debug("Query Data: {}", cql);
+        return cql;
     }
 }

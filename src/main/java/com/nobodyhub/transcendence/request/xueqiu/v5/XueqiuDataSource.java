@@ -2,12 +2,13 @@ package com.nobodyhub.transcendence.request.xueqiu.v5;
 
 import com.google.common.collect.Sets;
 import com.nobodyhub.transcendence.repository.model.StockBasicInfo;
-import com.nobodyhub.transcendence.repository.model.StockIndexInfo;
 import com.nobodyhub.transcendence.repository.rowdata.RowDataRepository;
 import com.nobodyhub.transcendence.request.HttpClient;
 import com.nobodyhub.transcendence.request.StockDataSource;
 import okhttp3.HttpUrl;
 import okhttp3.Request;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -23,9 +24,16 @@ import java.util.Set;
  */
 @Component
 public class XueqiuDataSource implements StockDataSource {
+    private static final Logger logger = LoggerFactory.getLogger(XueqiuDataSource.class);
+    /**
+     * Http client to send the request
+     */
     @Autowired
     private HttpClient client;
 
+    /**
+     * Repository to query/update data
+     */
     @Autowired
     private RowDataRepository repository;
 
@@ -71,7 +79,6 @@ public class XueqiuDataSource implements StockDataSource {
 
     @Override
     public void persistIndexInfo(List<String> stocks) throws IOException {
-        Set<StockIndexInfo> infoSet = Sets.newHashSet();
         for (String stock : stocks) {
             //refresh cookies
             Request pageReq = new Request.Builder()
@@ -107,7 +114,7 @@ public class XueqiuDataSource implements StockDataSource {
                 //persist
                 repository.update(stockDataSet.toStockIndexInfo());
             } else {
-                //TODO: add logger
+                logger.debug("StockDataSet Skipped! %s", stockDataSet);
             }
         }
     }

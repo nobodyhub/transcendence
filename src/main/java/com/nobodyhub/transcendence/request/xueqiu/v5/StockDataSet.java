@@ -3,12 +3,14 @@ package com.nobodyhub.transcendence.request.xueqiu.v5;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.nobodyhub.transcendence.repository.model.StockIndexInfo;
 import lombok.Data;
+import lombok.ToString;
 
 /**
  * @author yan_h
  * @since 2018/6/15
  */
 @Data
+@ToString
 public class StockDataSet {
     private StockData data;
 

@@ -6,6 +6,8 @@ import com.nobodyhub.transcendence.repository.mapper.serializer.LocalDateDeseria
 import com.nobodyhub.transcendence.repository.mapper.serializer.LocalDateSerializer;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -21,6 +23,7 @@ import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKN
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ValueMapper {
+    private static final Logger logger = LoggerFactory.getLogger(ValueMapper.class);
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     static {
@@ -45,7 +48,7 @@ public final class ValueMapper {
         try {
             return objectMapper.writeValueAsString(value);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Fail to convert!", e);
             throw new ValueMapperFailException(value.getClass(), e.getMessage());
         }
     }
@@ -66,7 +69,7 @@ public final class ValueMapper {
         try {
             return objectMapper.readValue(value, cls);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Fail to convert!", e);
             throw new ValueMapperFailException(cls, e.getMessage());
         }
     }

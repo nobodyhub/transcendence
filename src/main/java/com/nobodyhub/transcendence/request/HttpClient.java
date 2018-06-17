@@ -5,6 +5,8 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import okhttp3.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -19,7 +21,8 @@ import java.util.concurrent.ConcurrentMap;
  */
 @Component
 public class HttpClient {
-    private final static ObjectMapper objectMapper = new ObjectMapper();
+    private static final Logger logger = LoggerFactory.getLogger(HttpClient.class);
+    private static final ObjectMapper objectMapper = new ObjectMapper();
     /**
      * a map maintains cookies for each domain
      */
@@ -44,6 +47,7 @@ public class HttpClient {
             .build();
 
     public <T> T execute(Request req, Class<T> cls) throws IOException {
+        logger.info("Sending Request: {}", req);
         Response resp = client.newCall(req).execute();
         return objectMapper.readValue(resp.body().string(), cls);
     }
@@ -57,6 +61,7 @@ public class HttpClient {
      * @throws IOException
      */
     public void execute(Request req) throws IOException {
+        logger.info("Sending Request(response ignored): {}", req);
         Response resp = null;
         try {
             resp = client.newCall(req).execute();
