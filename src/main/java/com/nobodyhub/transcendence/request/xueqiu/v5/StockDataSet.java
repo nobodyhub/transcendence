@@ -21,4 +21,9 @@ public class StockDataSet {
     public StockIndexInfo toStockIndexInfo() {
         return data.toStockIndexInfo();
     }
+
+    public boolean isValid() {
+        return errorCode == 0
+                && !data.isEmpty();
+    }
 }

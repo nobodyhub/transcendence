@@ -54,6 +54,12 @@ public class StockData {
     private List<String> column;
     private List<List<BigDecimal>> item;
 
+    public boolean isEmpty() {
+        return symbol == null
+                && column == null
+                && item == null;
+    }
+
     public StockIndexInfo toStockIndexInfo() {
         StockIndexInfo indexInfo = new StockIndexInfo();
         indexInfo.setId(symbol);
