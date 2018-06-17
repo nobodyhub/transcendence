@@ -44,12 +44,27 @@ public class HttpClient {
             .build();
 
     public <T> T execute(Request req, Class<T> cls) throws IOException {
-        Response resp = execute(req);
+        Response resp = client.newCall(req).execute();
         return objectMapper.readValue(resp.body().string(), cls);
     }
 
-    public Response execute(Request req) throws IOException {
-        return client.newCall(req).execute();
+    /**
+     * send request but ignore response
+     * (to refresh the cookies)
+     *
+     * @param req
+     * @return
+     * @throws IOException
+     */
+    public void execute(Request req) throws IOException {
+        Response resp = null;
+        try {
+            resp = client.newCall(req).execute();
+        } finally {
+            if (resp != null) {
+                resp.close();
+            }
+        }
     }
 
 }
