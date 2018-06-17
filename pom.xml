@@ -59,8 +59,12 @@
             <artifactId>jackson-core</artifactId>
             <version>${jackson.version}</version>
         </dependency>
-
-
+        <dependency>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+            <version>0.9.11</version>
+        </dependency>
+        <!--For Test-->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
