@@ -28,7 +28,7 @@ public class AbstractRepositoryTest {
         values.put("DEC123", "20180615");
         values.put("DATE20180615", "{{}}");
         values.put("nullvalue", null);
-        assertEquals(" UPDATE \"cfName\"   SET \"DATE20180615\"='{{}}' ,  SET \"DEC123\"='20180615' ,  SET \"nullvalue\"=null ,  SET \"val1\"='20180615'  WHERE \"rowKeyName\"='rowKey'",
+        assertEquals(" UPDATE \"cfName\" SET  \"DATE20180615\"='{{}}' ,  \"DEC123\"='20180615' ,  \"nullvalue\"=null ,  \"val1\"='20180615'  WHERE \"rowKeyName\"='rowKey'",
                 repository.updateCql("cfName",
                         "rowKeyName",
                         "rowKey",

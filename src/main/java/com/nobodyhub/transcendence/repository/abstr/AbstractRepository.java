@@ -83,7 +83,7 @@ public abstract class AbstractRepository {
             ColumnMetadata columnMeta = cluster.getMetadata()
                     .getKeyspace(session.getLoggedKeyspace())
                     .getTable(tableName)
-                    .getColumn(colName);
+                    .getColumn("\"" + colName + "\"");
             return columnMeta == null;
         }).collect(Collectors.toSet());
         // add non-existed columns
@@ -170,15 +170,15 @@ public abstract class AbstractRepository {
                                String rowKey,
                                Map<String, String> values) {
         StringBuilder sb = new StringBuilder();
-        sb.append(String.format(" UPDATE \"%s\"  ", cfName));
+        sb.append(String.format(" UPDATE \"%s\" SET ", cfName));
         List<String> assignments = Lists.newArrayList();
         for (Map.Entry<String, String> entry : values.entrySet()) {
             String value = entry.getValue();
             if (value == null) {
-                assignments.add(String.format(" SET \"%s\"=null ",
+                assignments.add(String.format(" \"%s\"=null ",
                         entry.getKey()));
             } else {
-                assignments.add(String.format(" SET \"%s\"='%s' ",
+                assignments.add(String.format(" \"%s\"='%s' ",
                         entry.getKey(), value));
             }
         }
