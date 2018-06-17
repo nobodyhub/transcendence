@@ -1,8 +1,8 @@
 package com.nobodyhub.transcendence.repository.abstr;
 
 import com.datastax.driver.core.Cluster;
+import com.datastax.driver.core.ColumnMetadata;
 import com.datastax.driver.core.Session;
-import com.datastax.driver.core.exceptions.InvalidQueryException;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -78,24 +78,17 @@ public abstract class AbstractRepository {
      * @param columnNames
      */
     protected void addColumns(String tableName, Set<String> columnNames) {
-        columnNames.forEach(
-                (columnName) -> addColumn(tableName, columnName)
-        );
-    }
-
-    /**
-     * add column to table
-     * if column exists, will return silently, no exception thrown
-     *
-     * @param tableName
-     * @param columnName
-     */
-    protected void addColumn(String tableName, String columnName) {
-        try {
-            this.session.execute(addColumnCql(tableName, columnName));
-        } catch (InvalidQueryException e) {
-            //fail if column exist, safely ignored
-            //TODO: add logger
+        //filter existed columns
+        Set<String> nonExist = columnNames.stream().filter(colName -> {
+            ColumnMetadata columnMeta = cluster.getMetadata()
+                    .getKeyspace(session.getLoggedKeyspace())
+                    .getTable(tableName)
+                    .getColumn(colName);
+            return columnMeta == null;
+        }).collect(Collectors.toSet());
+        // add non-existed columns
+        if (!nonExist.isEmpty()) {
+            this.session.execute(addColumnsCql(tableName, nonExist));
         }
     }
 
@@ -125,14 +118,17 @@ public abstract class AbstractRepository {
     /**
      * CQL to add a column
      *
-     * @param table  table name
-     * @param column column name(key)
+     * @param table   table name
+     * @param columns column names(key)
      * @return
      */
-    protected String addColumnCql(String table, String column) {
+    protected String addColumnsCql(String table, Set<String> columns) {
+        Set<String> colCqls = columns.stream().map(column ->
+                String.format(" \"%s\" text ", column))
+                .collect(Collectors.toSet());
         StringBuilder sb = new StringBuilder();
         sb.append(String.format(" ALTER TABLE \"%s\" ", table));
-        sb.append(String.format(" ADD \"%s\" text ", column));
+        sb.append(String.format(" ADD ( %s )", Joiner.on(", ").join(colCqls)));
         return sb.toString();
     }
 

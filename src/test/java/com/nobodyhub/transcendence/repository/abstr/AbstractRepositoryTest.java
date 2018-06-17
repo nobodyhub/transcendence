@@ -17,8 +17,8 @@ public class AbstractRepositoryTest {
     @Test
     public void testCql() {
         RowDataRepository repository = new RowDataRepository();
-        assertEquals(" ALTER TABLE \"tbl\"  ADD \"col\" text ",
-                repository.addColumnCql("tbl", "col"));
+        assertEquals(" ALTER TABLE \"tbl\"  ADD (  \"col1\" text ,  \"col2\" text  )",
+                repository.addColumnsCql("tbl", Sets.newHashSet("col1", "col2")));
         assertEquals(" CREATE TABLE IF NOT EXISTS \"tbl\" (  \"idCol\" text PRIMARY KEY  ) ",
                 repository.createTableCql("tbl", "idCol"));
         assertEquals(" DROP TABLE IF EXISTS \"tbl\" ",
