@@ -62,13 +62,14 @@ public abstract class AbstractRepository {
     /**
      * Query content for given entity
      * the query entity should have:
-     * 1. non-null value for @Id field
+     * 1. if @Id field's value is null, query all data. Otherwise, only the row with given row key
      * 2. all @Column fields will be fetched
      * 3. for @ColumnMap field, only fetch those whose keys are contained in map of given entity
      *
      * @param entity
+     * @return
      */
-    public abstract void query(Entity entity);
+    public abstract <T extends Entity<T>> List<T> query(T entity);
 
     /**
      * Add a set of columns to given table
@@ -210,7 +211,9 @@ public abstract class AbstractRepository {
                 cols.stream().map(ele -> "\"" + ele + "\"")
                         .collect(Collectors.toList()))));
         sb.append(String.format(" FROM \"%s\" ", cfName));
-        sb.append(String.format(" WHERE \"%s\"='%s' ", rowKeyName, rowKey));
+        if (rowKey != null) {
+            sb.append(String.format(" WHERE \"%s\"='%s' ", rowKeyName, rowKey));
+        }
         return sb.toString();
     }
 }

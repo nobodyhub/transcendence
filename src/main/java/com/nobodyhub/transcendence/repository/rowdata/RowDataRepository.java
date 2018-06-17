@@ -3,12 +3,14 @@ package com.nobodyhub.transcendence.repository.rowdata;
 import com.datastax.driver.core.ColumnDefinitions;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
+import com.google.common.collect.Lists;
 import com.nobodyhub.transcendence.repository.abstr.AbstractRepository;
 import com.nobodyhub.transcendence.repository.model.abstr.Entity;
 import com.nobodyhub.transcendence.repository.util.ClassHelper;
 import org.springframework.stereotype.Repository;
 
 import java.lang.reflect.Field;
+import java.util.List;
 
 /**
  * @author yan_h
@@ -43,7 +45,7 @@ public class RowDataRepository extends AbstractRepository {
     }
 
     @Override
-    public void query(Entity entity) {
+    public <T extends Entity<T>> List<T> query(T entity) {
         RowData rowData = RowData.of(entity);
         addColumns(rowData.getCfName(), rowData.getColumnNames());
         ResultSet resultSet = this.session.execute(selectCql(rowData.getCfName(),
@@ -51,15 +53,20 @@ public class RowDataRepository extends AbstractRepository {
                 rowData.getRowKey(),
                 rowData.getColumnNames())
         );
+        List<T> results = Lists.newArrayList();
         for (Row row : resultSet) {
+            T resultEntity = entity.build();
+            RowData resultRowData = RowData.of(entity.getClass());
             ColumnDefinitions colDefs = row.getColumnDefinitions();
             for (ColumnDefinitions.Definition colDef : colDefs) {
                 String colName = colDef.getName();
-                rowData.addValue(colName, row.getString(colName));
+                resultRowData.addValue(colName, row.getString(colName));
             }
+            for (Field field : ClassHelper.getFields(entity.getClass())) {
+                resultRowData.fillField(field, resultEntity);
+            }
+            results.add(resultEntity);
         }
-        for (Field field : ClassHelper.getFields(entity.getClass())) {
-            rowData.fillField(field, entity);
-        }
+        return results;
     }
 }

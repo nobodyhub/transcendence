@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 import static junit.framework.TestCase.assertEquals;
 
@@ -35,41 +36,30 @@ public class RowDataRepositoryTest extends SpringTest {
         //StockBasicInfo
         StockBasicInfo updateStockBasicInfo = new StockBasicInfo();
         updateStockBasicInfo.setId("sh000001");
-        StockBasicInfo resultStockBasicInfo = new StockBasicInfo();
-        resultStockBasicInfo.setId("sh000001");
 
-        repository.query(resultStockBasicInfo);
-        assertEquals(resultStockBasicInfo, updateStockBasicInfo);
-        repository.update(updateStockBasicInfo);
-        repository.query(resultStockBasicInfo);
-        assertEquals(resultStockBasicInfo, updateStockBasicInfo);
+        List<StockBasicInfo> stockBasicResults = repository.query(updateStockBasicInfo);
+        assertEquals(0, stockBasicResults.size());
         updateStockBasicInfo.setName("上证指数");
         repository.update(updateStockBasicInfo);
-        repository.query(resultStockBasicInfo);
-        assertEquals(resultStockBasicInfo, updateStockBasicInfo);
+        stockBasicResults = repository.query(updateStockBasicInfo);
+        assertEquals(stockBasicResults.get(0), updateStockBasicInfo);
 
         //StockIndexInfo
         StockIndexInfo updateStockIndexInfo = new StockIndexInfo();
         updateStockIndexInfo.setId("sh000001");
-        StockIndexInfo resultStockIndexInfo = new StockIndexInfo();
-        resultStockIndexInfo.setId("sh000001");
 
-        repository.query(resultStockIndexInfo);
-        assertEquals(resultStockIndexInfo, updateStockIndexInfo);
-        repository.update(updateStockIndexInfo);
-        repository.query(resultStockIndexInfo);
-        assertEquals(resultStockIndexInfo, updateStockIndexInfo);
+        List<StockIndexInfo> stcokIndexResults = repository.query(updateStockIndexInfo);
+        assertEquals(0, stcokIndexResults.size());
         StockIndexSet indexSet = StockIndexSet.of(LocalDate.of(2018, 6, 15));
         indexSet.setOpen(new BigDecimal("100"));
         updateStockIndexInfo.addPriceIndex(indexSet);
-        resultStockIndexInfo.addPriceIndex(StockIndexSet.of(LocalDate.of(2018, 6, 15)));
         repository.update(updateStockIndexInfo);
-        repository.query(resultStockIndexInfo);
-        assertEquals(resultStockIndexInfo, updateStockIndexInfo);
+        stcokIndexResults = repository.query(updateStockIndexInfo);
+        assertEquals(stcokIndexResults.get(0), updateStockIndexInfo);
         indexSet.setVolume(new BigDecimal("213412.34"));
         repository.update(updateStockIndexInfo);
-        repository.query(resultStockIndexInfo);
-        assertEquals(resultStockIndexInfo, updateStockIndexInfo);
+        stcokIndexResults = repository.query(updateStockIndexInfo);
+        assertEquals(stcokIndexResults.get(0), updateStockIndexInfo);
     }
 
 

@@ -12,7 +12,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode
-public abstract class Entity {
+public abstract class Entity<E> implements EntityBuilder<E> {
     /**
      * Row key
      */

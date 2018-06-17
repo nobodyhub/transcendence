@@ -17,10 +17,15 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ColumnFamily("stock_info_basic")
-public class StockBasicInfo extends Entity {
+public class StockBasicInfo extends Entity<StockBasicInfo> {
     /**
      * stock name
      */
     @Column
     private String name;
+
+    @Override
+    public StockBasicInfo build() {
+        return new StockBasicInfo();
+    }
 }

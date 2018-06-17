@@ -82,8 +82,16 @@ public final class RowData {
         try {
             Id idAnno = field.getAnnotation(Id.class);
             if (idAnno != null) {
-                field.set(entity,
-                        ValueMapper.from(rowKey, field.getType()));
+                if (rowKey != null) {
+                    //get from rowKey
+                    field.set(entity,
+                            ValueMapper.from(rowKey, field.getType()));
+                } else {
+                    //get from values
+                    String colNm = KeyMapper.to(field.getName());
+                    field.set(entity,
+                            ValueMapper.from(values.get(colNm), field.getType()));
+                }
                 return;
             }
 

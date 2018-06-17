@@ -21,7 +21,7 @@ import java.util.Map;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ColumnFamily("stock_info_index")
-public class StockIndexInfo extends Entity {
+public class StockIndexInfo extends Entity<StockIndexInfo> {
     /**
      * daily index information
      */
@@ -30,5 +30,13 @@ public class StockIndexInfo extends Entity {
 
     public void addPriceIndex(StockIndexSet indice) {
         indices.put(indice.getDate(), indice);
+    }
+
+    @Override
+    public StockIndexInfo build() {
+        StockIndexInfo indexInfo = new StockIndexInfo();
+        indices.keySet().forEach(
+                key -> indexInfo.addPriceIndex(StockIndexSet.of(key)));
+        return indexInfo;
     }
 }
