@@ -2,6 +2,7 @@ package com.nobodyhub.transcendence.repository;
 
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Session;
+import com.datastax.driver.core.SocketOptions;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -34,6 +35,8 @@ public class CassandraConfig {
         return Cluster.builder()
                 .addContactPoints(host)
                 .withPort(Integer.parseInt(port))
+                .withSocketOptions(new SocketOptions()
+                        .setConnectTimeoutMillis(20000))
                 .build();
     }
 
