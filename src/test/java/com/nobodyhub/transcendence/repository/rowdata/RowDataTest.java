@@ -63,8 +63,9 @@ public class RowDataTest {
         assertEquals("stock_info_index", rowData.getCfName());
         assertEquals("id", rowData.getRowKeyName());
         assertEquals("sh0000001", rowData.getRowKey());
-        assertEquals("{\"date\":20180615,\"volume\":12039.232,\"open\":129.22,\"high\":null,\"low\":null,\"close\":null,\"chg\":null,\"percent\":null,\"turnoverrate\":null,\"ma5\":null,\"ma10\":null,\"ma20\":null,\"ma30\":null,\"dea\":null,\"dif\":null,\"macd\":null,\"ub\":null,\"lb\":null,\"mid\":null,\"kdjk\":null,\"kdjd\":null,\"kdjj\":null,\"rsi1\":null,\"rsi2\":null,\"rsi3\":null,\"wr6\":null,\"wr10\":null,\"bias1\":null,\"bias2\":null,\"bias3\":null,\"cci\":null,\"psy\":null,\"psym\":null}", rowData.getValue(
-                KeyMapper.to(LocalDate.of(2018, 6, 15))));
+        assertEquals("{\"date\":20180615,\"volume\":12039.232,\"open\":129.22,\"high\":null,\"low\":null,\"close\":null,\"chg\":null,\"percent\":null,\"turnoverrate\":null,\"ma5\":null,\"ma10\":null,\"ma20\":null,\"ma30\":null,\"dea\":null,\"dif\":null,\"macd\":null,\"ub\":null,\"lb\":null,\"mb\":null,\"kdjk\":null,\"kdjd\":null,\"kdjj\":null,\"rsi1\":null,\"rsi2\":null,\"rsi3\":null,\"wr6\":null,\"wr10\":null,\"bias1\":null,\"bias2\":null,\"bias3\":null,\"cci\":null,\"psy\":null,\"psyma\":null}",
+                rowData.getValue(
+                        KeyMapper.to(LocalDate.of(2018, 6, 15))));
     }
 
     @Test
@@ -83,7 +84,5 @@ public class RowDataTest {
             rowData.fillField(field, stockIndexInfoEntity);
             assertEquals(field.get(stockIndexInfo), field.get(stockIndexInfoEntity));
         }
-
     }
-
 }
