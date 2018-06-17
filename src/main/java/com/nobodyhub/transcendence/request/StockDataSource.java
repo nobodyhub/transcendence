@@ -1,8 +1,5 @@
 package com.nobodyhub.transcendence.request;
 
-import com.nobodyhub.transcendence.repository.model.StockBasicInfo;
-import com.nobodyhub.transcendence.repository.model.StockIndexInfo;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -16,18 +13,18 @@ public interface StockDataSource {
     /**
      * Get stock basic info
      *
-     * @param stocks stock ids
+     * @param stockIds stock ids
      * @return
      * @throws IOException
      */
-    List<StockBasicInfo> getBasicInfo(List<String> stocks) throws IOException;
+    void persistBasicInfo(List<String> stockIds) throws IOException;
 
     /**
      * Get stock index info
      *
-     * @param stocks stock ids
+     * @param stockIds stock ids
      * @return
      * @throws IOException
      */
-    List<StockIndexInfo> getIndexInfo(List<String> stocks) throws IOException;
+    void persistIndexInfo(List<String> stockIds) throws IOException;
 }

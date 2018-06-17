@@ -1,9 +1,9 @@
 package com.nobodyhub.transcendence.request.xueqiu.v5;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.nobodyhub.transcendence.repository.model.StockBasicInfo;
 import com.nobodyhub.transcendence.repository.model.StockIndexInfo;
+import com.nobodyhub.transcendence.repository.rowdata.RowDataRepository;
 import com.nobodyhub.transcendence.request.HttpClient;
 import com.nobodyhub.transcendence.request.StockDataSource;
 import okhttp3.HttpUrl;
@@ -26,9 +26,11 @@ public class XueqiuDataSource implements StockDataSource {
     @Autowired
     private HttpClient client;
 
+    @Autowired
+    private RowDataRepository repository;
 
     @Override
-    public List<StockBasicInfo> getBasicInfo(List<String> stocks) throws IOException {
+    public void persistBasicInfo(List<String> stocks) throws IOException {
         //refresh cookies
         Request pageReq = new Request.Builder()
                 .url(new HttpUrl.Builder()
@@ -63,11 +65,12 @@ public class XueqiuDataSource implements StockDataSource {
                 break;
             }
         }
-        return Lists.newArrayList(stockSet);
+        //persist
+        stockSet.forEach(info -> repository.update(info));
     }
 
     @Override
-    public List<StockIndexInfo> getIndexInfo(List<String> stocks) throws IOException {
+    public void persistIndexInfo(List<String> stocks) throws IOException {
         Set<StockIndexInfo> infoSet = Sets.newHashSet();
         for (String stock : stocks) {
             //refresh cookies
@@ -99,8 +102,13 @@ public class XueqiuDataSource implements StockDataSource {
                             .build())
                     .build();
             StockDataSet stockDataSet = client.execute(dataReq, StockDataSet.class);
-            infoSet.add(stockDataSet.toStockIndexInfo());
+            //filter those which might not be stock or has error
+            if (stockDataSet.isValid()) {
+                //persist
+                repository.update(stockDataSet.toStockIndexInfo());
+            } else {
+                //TODO: add logger
+            }
         }
-        return Lists.newArrayList(infoSet);
     }
 }
