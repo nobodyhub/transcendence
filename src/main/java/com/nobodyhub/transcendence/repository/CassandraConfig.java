@@ -46,7 +46,7 @@ public class CassandraConfig {
         sb.append(" WITH replication = ");
         sb.append(" { ");
         sb.append("  'class':'SimpleStrategy', ");
-        sb.append("  'replication_factor':3 ");
+        sb.append("  'replication_factor':1 ");
         sb.append(" } ");
         return sb.toString();
     }
