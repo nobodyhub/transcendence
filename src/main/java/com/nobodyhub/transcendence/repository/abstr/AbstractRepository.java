@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -103,6 +104,15 @@ public abstract class AbstractRepository {
         entities.stream()
                 .filter(clz -> clz.isAnnotationPresent(ColumnFamily.class))
                 .forEach(this::createTable);
+    }
+
+    /**
+     * Close connection before termination
+     */
+    @PreDestroy
+    public void shutdown() {
+        session.close();
+        cluster.close();
     }
 
     /**
