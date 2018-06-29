@@ -3,6 +3,8 @@ package com.nobodyhub.transcendence.request.xueqiu.v5;
 import com.google.common.collect.Sets;
 import com.nobodyhub.transcendence.repository.model.StockBasicInfo;
 import com.nobodyhub.transcendence.repository.rowdata.RowDataRepository;
+import com.nobodyhub.transcendence.request.FetchPeriod;
+import com.nobodyhub.transcendence.request.FetchSize;
 import com.nobodyhub.transcendence.request.HttpClient;
 import com.nobodyhub.transcendence.request.StockDataSource;
 import okhttp3.HttpUrl;
@@ -10,11 +12,10 @@ import okhttp3.Request;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.List;
 import java.util.Set;
 
@@ -36,6 +37,12 @@ public class XueqiuDataSource implements StockDataSource {
      */
     @Autowired
     private RowDataRepository repository;
+
+    /**
+     * Date size to be fetched
+     */
+    @Value("${fetch.size}")
+    private FetchSize fetchSize;
 
     @Override
     public void persistBasicInfo(List<String> stocks) throws IOException {
@@ -90,31 +97,32 @@ public class XueqiuDataSource implements StockDataSource {
                             .build())
                     .build();
             client.execute(pageReq);
-            Request dataReq = new Request.Builder()
-                    .url(new HttpUrl.Builder()
-                            .scheme("https")
-                            .host("stock.xueqiu.com")
-                            .addPathSegments("v5/stock/chart/kline.json")
-                            .addQueryParameter("symbol", stock.toUpperCase())
-                            .addQueryParameter("begin", "0")
-                            .addQueryParameter("end",
-                                    String.valueOf(LocalDate.now()
-                                            .atStartOfDay()
-                                            .atZone(ZoneId.systemDefault())
-                                            .toInstant().toEpochMilli()))
-                            .addQueryParameter("period", "day")
-                            .addQueryParameter("type", "before")
-                            .addQueryParameter("indicator",
-                                    "kline,ma,macd,kdj,boll,rsi,wr,bias,cci,psy")
-                            .build())
-                    .build();
-            StockDataSet stockDataSet = client.execute(dataReq, StockDataSet.class);
-            //filter those which might not be stock or has error
-            if (stockDataSet.isValid()) {
-                //persist
-                repository.update(stockDataSet.toStockIndexInfo());
-            } else {
-                logger.debug("StockDataSet Skipped! %s", stockDataSet);
+            FetchPeriod fetchPeriod = FetchPeriod.of(fetchSize);
+            while (fetchPeriod.hasNext()) {
+                FetchPeriod curPeriod = fetchPeriod.next();
+                Request dataReq = new Request.Builder()
+                        .url(new HttpUrl.Builder()
+                                .scheme("https")
+                                .host("stock.xueqiu.com")
+                                .addPathSegments("v5/stock/chart/kline.json")
+                                .addQueryParameter("symbol", stock.toUpperCase())
+                                .addQueryParameter("begin", String.valueOf(curPeriod.getStartMilli()))
+                                .addQueryParameter("end", String.valueOf(curPeriod.getEndMilli()))
+                                .addQueryParameter("period", "day")
+                                .addQueryParameter("type", "before")
+                                .addQueryParameter("indicator",
+                                        "kline,ma,macd,kdj,boll,rsi,wr,bias,cci,psy")
+                                .build())
+                        .build();
+                StockDataSet stockDataSet = client.execute(dataReq, StockDataSet.class);
+                //filter those which might not be stock or has error
+                if (stockDataSet.isValid()) {
+                    //persist
+                    repository.update(stockDataSet.toStockIndexInfo());
+                } else {
+                    logger.debug("Empty StockDataSet Skipped! {}", stockDataSet);
+                    break;
+                }
             }
         }
     }
