@@ -45,7 +45,7 @@ public class XueqiuDataSource implements StockDataSource {
     private FetchSize fetchSize;
 
     @Override
-    public void persistBasicInfo(List<String> stocks) throws IOException {
+    public void persistBasicInfo(List<String> stocks) throws IOException, InterruptedException {
         //refresh cookies
         Request pageReq = new Request.Builder()
                 .url(new HttpUrl.Builder()
@@ -85,7 +85,7 @@ public class XueqiuDataSource implements StockDataSource {
     }
 
     @Override
-    public void persistIndexInfo(List<String> stocks) throws IOException {
+    public void persistIndexInfo(List<String> stocks) throws IOException, InterruptedException {
         for (String stock : stocks) {
             //refresh cookies
             Request pageReq = new Request.Builder()

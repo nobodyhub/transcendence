@@ -29,7 +29,7 @@ public class XueqiuDataSourceTest extends SpringTest {
     }
 
     @Test
-    public void test() throws IOException {
+    public void test() throws IOException, InterruptedException {
         dataSource.persistBasicInfo(Lists.newArrayList());
         dataSource.persistIndexInfo(
                 Lists.newArrayList("SZ300750"));

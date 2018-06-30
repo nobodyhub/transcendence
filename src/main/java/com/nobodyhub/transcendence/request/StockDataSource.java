@@ -17,7 +17,7 @@ public interface StockDataSource {
      * @return
      * @throws IOException
      */
-    void persistBasicInfo(List<String> stockIds) throws IOException;
+    void persistBasicInfo(List<String> stockIds) throws IOException, InterruptedException;
 
     /**
      * Get stock index info
@@ -26,5 +26,5 @@ public interface StockDataSource {
      * @return
      * @throws IOException
      */
-    void persistIndexInfo(List<String> stockIds) throws IOException;
+    void persistIndexInfo(List<String> stockIds) throws IOException, InterruptedException;
 }

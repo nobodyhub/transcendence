@@ -10,10 +10,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author yan_h
@@ -44,11 +46,20 @@ public class HttpClient {
                     );
                 }
             })
+            .connectTimeout(60, TimeUnit.SECONDS)
+            .readTimeout(60, TimeUnit.SECONDS)
             .build();
 
-    public <T> T execute(Request req, Class<T> cls) throws IOException {
+    public <T> T execute(Request req, Class<T> cls) throws IOException, InterruptedException {
         logger.info("Sending Request: {}", req);
-        Response resp = client.newCall(req).execute();
+        Response resp = null;
+        try {
+            resp = newCall(req);
+        } catch (SocketTimeoutException e) {
+            logger.error(e.getMessage());
+            //sleep for 10s when timeout happens
+            Thread.sleep(10000);
+        }
         return objectMapper.readValue(resp.body().string(), cls);
     }
 
@@ -60,16 +71,28 @@ public class HttpClient {
      * @return
      * @throws IOException
      */
-    public void execute(Request req) throws IOException {
+    public void execute(Request req) throws IOException, InterruptedException {
         logger.info("Sending Request(response ignored): {}", req);
         Response resp = null;
         try {
-            resp = client.newCall(req).execute();
+            resp = newCall(req);
         } finally {
             if (resp != null) {
                 resp.close();
             }
         }
+    }
+
+    protected Response newCall(Request req) throws IOException, InterruptedException {
+        Response resp = null;
+        try {
+            resp = client.newCall(req).execute();
+        } catch (SocketTimeoutException e) {
+            logger.error(e.getMessage());
+            //sleep for 10s when timeout happens
+            Thread.sleep(10000);
+        }
+        return resp;
     }
 
 }
