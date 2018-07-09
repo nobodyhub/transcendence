@@ -44,8 +44,14 @@ public class XueqiuDataSource implements StockDataSource {
     @Value("${fetch.size}")
     private FetchSize fetchSize;
 
+    /**
+     * Record the number of request sent before error(esp. the SocketTimeoutException)
+     * TODO: change to thread-safe
+     */
+    private int reqCount = 0;
+
     @Override
-    public void persistBasicInfo(List<String> stocks) throws IOException, InterruptedException {
+    public void persistBasicInfo(List<String> stocks) {
         //refresh cookies
         Request pageReq = new Request.Builder()
                 .url(new HttpUrl.Builder()
@@ -54,7 +60,13 @@ public class XueqiuDataSource implements StockDataSource {
                         .addPathSegment("hq")
                         .build())
                 .build();
-        client.execute(pageReq);
+        try {
+            client.execute(pageReq);
+        } catch (IOException | InterruptedException e) {
+            logger.error("Error happens when refresh cookies to fetch stock basic info! [request_count: {}]", reqCount, e);
+        } finally {
+            reqCount++;
+        }
         //request stock list
         //use set to remove potential duplications in last page
         Set<StockBasicInfo> stockSet = Sets.newHashSet();
@@ -73,11 +85,18 @@ public class XueqiuDataSource implements StockDataSource {
                             .addQueryParameter("orderby", "percent")
                             .build())
                     .build();
-            StockList stockList = client.execute(dataReq, StockList.class);
-            stockSet.addAll(stockList.toStockBasicInfo());
-            stockCount = stockCount + stockList.getStocks().size();
-            if (stockCount >= stockList.getCount().get("count")) {
-                break;
+            StockList stockList = null;
+            try {
+                stockList = client.execute(dataReq, StockList.class);
+                stockSet.addAll(stockList.toStockBasicInfo());
+                stockCount = stockCount + stockList.getStocks().size();
+                if (stockCount >= stockList.getCount().get("count")) {
+                    break;
+                }
+            } catch (IOException | InterruptedException e) {
+                logger.error("Error happens when fetch stock basic info! [request_count: {}]", reqCount, e);
+            } finally {
+                reqCount++;
             }
         }
         //persist
@@ -85,7 +104,7 @@ public class XueqiuDataSource implements StockDataSource {
     }
 
     @Override
-    public void persistIndexInfo(List<String> stocks) throws IOException, InterruptedException {
+    public void persistIndexInfo(List<String> stocks) {
         for (String stock : stocks) {
             //refresh cookies
             Request pageReq = new Request.Builder()
@@ -96,7 +115,13 @@ public class XueqiuDataSource implements StockDataSource {
                             .addPathSegment(stock.toUpperCase())
                             .build())
                     .build();
-            client.execute(pageReq);
+            try {
+                client.execute(pageReq);
+            } catch (IOException | InterruptedException e) {
+                logger.error("Error happens when refresh cookies to fetch stock index info! [request_count: {}]", reqCount, e);
+            } finally {
+                reqCount++;
+            }
             FetchPeriod fetchPeriod = FetchPeriod.of(fetchSize);
             while (fetchPeriod.hasNext()) {
                 FetchPeriod curPeriod = fetchPeriod.next();
@@ -114,14 +139,21 @@ public class XueqiuDataSource implements StockDataSource {
                                         "kline,ma,macd,kdj,boll,rsi,wr,bias,cci,psy")
                                 .build())
                         .build();
-                StockDataSet stockDataSet = client.execute(dataReq, StockDataSet.class);
-                //filter those which might not be stock or has error
-                if (stockDataSet.isValid()) {
-                    //persist
-                    repository.update(stockDataSet.toStockIndexInfo());
-                } else {
-                    logger.debug("Empty StockDataSet Skipped! {}", stockDataSet);
-                    break;
+                StockDataSet stockDataSet = null;
+                try {
+                    stockDataSet = client.execute(dataReq, StockDataSet.class);
+                    //filter those which might not be stock or has error
+                    if (stockDataSet.isValid()) {
+                        //persist
+                        repository.update(stockDataSet.toStockIndexInfo());
+                    } else {
+                        logger.debug("Empty StockDataSet Skipped! {}", stockDataSet);
+                        break;
+                    }
+                } catch (IOException | InterruptedException e) {
+                    logger.error("Error happens when fetch stock index info! [request_count: {}]", reqCount, e);
+                } finally {
+                    reqCount++;
                 }
             }
         }
