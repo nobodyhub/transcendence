@@ -186,12 +186,12 @@ public final class RowData {
     private static void parseMapFieldValue(RowData rowData,
                                            Object object,
                                            Field field) throws IllegalAccessException {
-        Map values = (Map) field.get(object);
-        for (Object key : values.keySet()) {
+        Map<Object, Object> values = (Map) field.get(object);
+        for (Map.Entry<Object, Object> entry : values.entrySet()) {
             rowData.addValue(
                     field.getType(),
-                    KeyMapper.to(key),
-                    ValueMapper.to(values.get(key)));
+                    KeyMapper.to(entry.getKey()),
+                    ValueMapper.to(entry.getValue()));
         }
     }
 

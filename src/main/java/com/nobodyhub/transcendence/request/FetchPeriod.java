@@ -5,6 +5,7 @@ import lombok.Getter;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * Data fetch period
@@ -94,6 +95,9 @@ public class FetchPeriod implements Iterator<FetchPeriod> {
      */
     @Override
     public FetchPeriod next() {
+        if (!hasNext()) {
+            throw new NoSuchElementException();
+        }
         LocalDate periodStart = tempEnd.minusYears(1);
         if (periodStart.isBefore(start)) {
             periodStart = start;
