@@ -69,7 +69,7 @@ public abstract class AbstractRepository {
      * @param entity
      * @return
      */
-    public abstract <T extends Entity<T>> T query(T entity);
+    public abstract <T extends Entity<T>> List<T> query(T entity);
 
     /**
      * Add a set of columns to given table

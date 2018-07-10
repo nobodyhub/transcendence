@@ -45,7 +45,7 @@ public class RowDataRepository extends AbstractRepository {
     }
 
     @Override
-    public <T extends Entity<T>> T query(T entity) {
+    public <T extends Entity<T>> List<T> query(T entity) {
         RowData rowData = RowData.of(entity);
         addColumns(rowData.getCfName(), rowData.getColumnNames());
         ResultSet resultSet = this.session.execute(selectCql(rowData.getCfName(),
@@ -67,10 +67,6 @@ public class RowDataRepository extends AbstractRepository {
             }
             results.add(resultEntity);
         }
-        if (results.size() == 1) {
-            return results.get(0);
-        } else {
-            return null;
-        }
+        return results;
     }
 }
