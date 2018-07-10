@@ -8,7 +8,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Stock price information
@@ -31,6 +33,26 @@ public class StockIndexInfo extends Entity<StockIndexInfo> {
     public void addPriceIndex(StockIndexSet indice) {
         indices.put(indice.getDate(), indice);
     }
+
+    public void merge(StockIndexInfo other) {
+        for (StockIndexSet indexSet : other.getIndices().values()) {
+            if (indexSet != null) {
+                addPriceIndex(indexSet);
+            }
+        }
+    }
+
+    /**
+     * Get {@link this#indices} as a list from latest to the ealiest
+     *
+     * @return sorted list of index
+     */
+    public List<StockIndexSet> getIndexList() {
+        return indices.values().stream()
+                .sorted()
+                .collect(Collectors.toList());
+    }
+
 
     @Override
     public StockIndexInfo build() {
