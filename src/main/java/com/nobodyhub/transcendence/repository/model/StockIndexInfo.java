@@ -34,12 +34,14 @@ public class StockIndexInfo extends Entity<StockIndexInfo> {
         indices.put(indice.getDate(), indice);
     }
 
-    public void merge(StockIndexInfo other) {
-        for (StockIndexSet indexSet : other.getIndices().values()) {
-            if (indexSet != null) {
-                addPriceIndex(indexSet);
+    public void merge(List<StockIndexInfo> others) {
+        others.forEach(other -> {
+            for (StockIndexSet indexSet : other.getIndices().values()) {
+                if (indexSet != null) {
+                    addPriceIndex(indexSet);
+                }
             }
-        }
+        });
     }
 
     /**
