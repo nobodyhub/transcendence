@@ -213,7 +213,9 @@ public final class RowData {
                     String.format("Duplicated Key found in Column Family: [ %s ]",
                             cls.getName()));
         }
-        values.put(key, value);
+        if (value != null) {
+            values.put(key, value);
+        }
     }
 
     private static <T extends Entity> RowData of(Class<? extends Entity> entityCls, T entity) {
