@@ -34,20 +34,18 @@ public class SimpleStratagy extends Stratagy {
         BigDecimal intersect = intersect(indexSets);
         StockIndexSet lastIndex = indexSets.get(0);
         BigDecimal avg5Diff = intersect.subtract(lastIndex.getMa5());
-        BigDecimal avg20Diff = intersect.subtract(lastIndex.getMa20());
-        BigDecimal avgDiff = avg5Diff.add(avg20Diff);
-        BigDecimal avgDiffAbs = avg5Diff.add(avg20Diff).abs();
-        BigDecimal totalDiffAbs = lastIndex.getMa5().add(lastIndex.getMa20()).abs();
+        BigDecimal avg5DiffAbs = avg5Diff.abs();
+        BigDecimal totalDiffAbs = lastIndex.getMa5().subtract(lastIndex.getMa20()).abs();
         result.setLastClose(lastIndex.getClose());
         if (totalDiffAbs.compareTo(BigDecimal.ZERO) != 0) {
             //上一交易日的收盘价5/20日均线不等
-            if (avgDiff.compareTo(BigDecimal.ZERO) > 0 &&
-                    avgDiffAbs.divide(totalDiffAbs, MathContext.DECIMAL32)
+            if (avg5Diff.compareTo(BigDecimal.ZERO) > 0 &&
+                    avg5DiffAbs.divide(totalDiffAbs, MathContext.DECIMAL32)
                             .compareTo(new BigDecimal("0.1")) >= 0) {
                 //5日均线由下至上穿过, 且波动大于上个交易日5/20均线差价的10%
                 result.setBuyPrice(intersect);
-            } else if (avgDiff.compareTo(BigDecimal.ZERO) < 0 &&
-                    avgDiffAbs.divide(totalDiffAbs, MathContext.DECIMAL32)
+            } else if (avg5Diff.compareTo(BigDecimal.ZERO) < 0 &&
+                    avg5DiffAbs.divide(totalDiffAbs, MathContext.DECIMAL32)
                             .compareTo(new BigDecimal("0.1")) >= 0) {
                 //5日均线由上至下穿过, 且波动大于上个交易日5/20均线差价的10%
                 result.setSellPrice(intersect);
@@ -65,7 +63,7 @@ public class SimpleStratagy extends Stratagy {
      * @return
      */
     protected BigDecimal intersect(List<StockIndexSet> indexSets) {
-        return indexSets.get(18).getClose()
+        return (indexSets.get(18).getClose()
                 .add(indexSets.get(17).getClose())
                 .add(indexSets.get(16).getClose())
                 .add(indexSets.get(15).getClose())
@@ -83,7 +81,8 @@ public class SimpleStratagy extends Stratagy {
                 .subtract(new BigDecimal("3").multiply(indexSets.get(3).getClose()))
                 .subtract(new BigDecimal("3").multiply(indexSets.get(2).getClose()))
                 .subtract(new BigDecimal("3").multiply(indexSets.get(1).getClose()))
-                .subtract(new BigDecimal("3").multiply(indexSets.get(0).getClose()));
+                .subtract(new BigDecimal("3").multiply(indexSets.get(0).getClose())))
+                .divide(new BigDecimal("3", MathContext.DECIMAL32));
     }
 
 

@@ -51,7 +51,7 @@ public class StockIndexInfo extends Entity<StockIndexInfo> {
      */
     public List<StockIndexSet> getIndexList() {
         return indices.values().stream()
-                .sorted()
+                .sorted((o1, o2) -> -1 * o1.getDate().compareTo(o2.getDate()))
                 .collect(Collectors.toList());
     }
 

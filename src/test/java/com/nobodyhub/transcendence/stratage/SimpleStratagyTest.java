@@ -1,5 +1,6 @@
 package com.nobodyhub.transcendence.stratage;
 
+import com.google.common.collect.Lists;
 import com.nobodyhub.transcendence.SpringTest;
 import com.nobodyhub.transcendence.repository.model.StockIndexInfo;
 import com.nobodyhub.transcendence.repository.model.StockIndexSet;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 
 import static junit.framework.TestCase.assertEquals;
@@ -35,11 +37,40 @@ public class SimpleStratagyTest extends SpringTest {
 
     }
 
+    @Test
+    public void testAnalyze() {
+        StockIndexInfo info = new StockIndexInfo();
+        info.setId("SH600519");
+        for (int count = 1; count <= 30; count++) {
+            StockIndexSet indexSet = StockIndexSet.of(today.minusDays(count));
+            indexSet.setClose(new BigDecimal(count));
+            indexSet.setMa5(new BigDecimal("3"));
+            indexSet.setMa20(new BigDecimal("10"));
+            info.addPriceIndex(indexSet);
+        }
+        repository.update(info);
+        StratagyResult result = simpleStratagy.analyze(today, "SH600519");
+        assertEquals(new BigDecimal("50"), result.getBuyPrice());
+        assertEquals(null, result.getSellPrice());
+        assertEquals(new BigDecimal("1"), result.getLastClose());
+    }
+
+    @Test
+    public void testIntersect() {
+        List<StockIndexSet> indexSets = Lists.newArrayList();
+        for (int count = 1; count <= 30; count++) {
+            StockIndexSet indexSet = StockIndexSet.of(today.minusDays(count));
+            indexSet.setClose(new BigDecimal(count));
+            indexSets.add(indexSet);
+        }
+        assertEquals(new BigDecimal("50"), simpleStratagy.intersect(indexSets));
+    }
 
     @Test
     public void testFetchIndex() {
         //insert 60 records includes nulls
         StockIndexInfo info = new StockIndexInfo();
+        info.setId("SH600519");
         for (int count = 1; count <= 60; count++) {
             if (count % 5 == 0) {
                 //insert null value on that day
@@ -70,8 +101,6 @@ public class SimpleStratagyTest extends SpringTest {
         assertEquals(true, indexSets.containsKey(LocalDate.of(2018, 6, 24)));
         assertEquals(true, indexSets.containsKey(LocalDate.of(2018, 6, 23)));
         assertEquals(true, indexSets.containsKey(LocalDate.of(2018, 6, 22)));
-
-
     }
 
     /**
