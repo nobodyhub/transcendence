@@ -67,7 +67,7 @@ public final class ValueMapper {
             return (T) value;
         }
         try {
-            return objectMapper.readValue(value, cls);
+            return value == null ? null : objectMapper.readValue(value, cls);
         } catch (IOException e) {
             logger.error("Fail to convert!", e);
             throw new ValueMapperFailException(cls, e.getMessage());

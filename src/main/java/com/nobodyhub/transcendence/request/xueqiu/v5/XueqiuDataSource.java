@@ -93,7 +93,7 @@ public class XueqiuDataSource implements StockDataSource {
                 if (stockCount >= stockList.getCount().get("count")) {
                     break;
                 }
-            } catch (IOException | InterruptedException e) {
+            } catch (Exception e) {
                 logger.error("Error happens when fetch stock basic info! [request_count: {}]", reqCount, e);
             } finally {
                 reqCount++;
@@ -117,7 +117,7 @@ public class XueqiuDataSource implements StockDataSource {
                     .build();
             try {
                 client.execute(pageReq);
-            } catch (IOException | InterruptedException e) {
+            } catch (Exception e) {
                 logger.error("Error happens when refresh cookies to fetch stock index info! [request_count: {}]", reqCount, e);
             } finally {
                 reqCount++;
