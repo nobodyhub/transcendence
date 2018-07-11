@@ -22,7 +22,7 @@ import static com.nobodyhub.transcendence.common.Tconst.CN_STOCK_START;
  * @since 2018/7/10
  */
 @Component
-public class SimpleStratagy implements Stratagy {
+public class SimpleStratagy extends Stratagy {
     @Autowired
     private RowDataRepository repository;
 
@@ -104,7 +104,7 @@ public class SimpleStratagy implements Stratagy {
             int batchOffset = batchSize * (nBatch - 1);
             int batchEnd = batchSize * nBatch;
             StockIndexInfo query = new StockIndexInfo();
-            indexInfo.setId(id);
+            query.setId(id);
             while (batchOffset < batchEnd) {
                 query.addPriceIndex(StockIndexSet.of(date.minusDays(batchOffset)));
                 batchOffset++;

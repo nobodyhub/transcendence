@@ -1,5 +1,8 @@
 package com.nobodyhub.transcendence.stratage;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.annotation.PostConstruct;
 import java.time.LocalDate;
 
 /**
@@ -8,7 +11,13 @@ import java.time.LocalDate;
  * @author yan_h
  * @since 2018/7/10
  */
-public interface Stratagy {
+public abstract class Stratagy {
+    /**
+     * Stratagy Executor
+     */
+    @Autowired
+    protected StratagyExecutor stratagyExecutor;
+
     /**
      * Execute stratage analysiss
      *
@@ -16,5 +25,13 @@ public interface Stratagy {
      * @param id   stock id, e.g., SH600519
      * @return analysis result
      */
-    StratagyResult analyze(LocalDate date, String id);
+    public abstract StratagyResult analyze(LocalDate date, String id);
+
+    /**
+     * Register the {@link this} into {@link StratagyExecutor}
+     */
+    @PostConstruct
+    public void setup() {
+        stratagyExecutor.register(this);
+    }
 }
