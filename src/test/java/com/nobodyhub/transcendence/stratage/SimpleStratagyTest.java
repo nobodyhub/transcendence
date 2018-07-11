@@ -106,7 +106,7 @@ public class SimpleStratagyTest extends SpringTest {
     /**
      * <b>Note:</b> this test takes more than 1 hour
      */
-    @Test
+//    @Test
     public void testFetchIndex2() {
         StockIndexInfo stockIndexInfo = simpleStratagy.fetchIndex(today, "SH600520", 10);
         assertEquals(0, stockIndexInfo.getIndices().size());
