@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
 import static junit.framework.TestCase.assertEquals;
 
@@ -30,18 +29,18 @@ public class SimpleStratagyTest extends SpringTest {
 
     private LocalDate today = LocalDate.of(2018, 7, 11);
 
+    private StockIndexInfo info;
+
     @Before
     public void setUp() {
         //create table
         repository.createTable(StockIndexInfo.class);
 
-    }
-
-    @Test
-    public void testAnalyze() {
-        StockIndexInfo info = new StockIndexInfo();
+        //insert 60 records includes nulls
+        info = new StockIndexInfo();
         info.setId("SH600519");
-        for (int count = 1; count <= 30; count++) {
+        //insert past data
+        for (int count = 1; count <= 60; count++) {
             StockIndexSet indexSet = StockIndexSet.of(today.minusDays(count));
             indexSet.setClose(new BigDecimal(count));
             indexSet.setMa5(new BigDecimal("3"));
@@ -49,7 +48,11 @@ public class SimpleStratagyTest extends SpringTest {
             info.addPriceIndex(indexSet);
         }
         repository.update(info);
-        StratagyResult result = simpleStratagy.analyze(today, "SH600519");
+    }
+
+    @Test
+    public void testAnalyze() {
+        StratagyResult result = simpleStratagy.analyze(info, today);
         assertEquals(new BigDecimal("50"), result.getBuyPrice());
         assertEquals(null, result.getSellPrice());
         assertEquals(new BigDecimal("1"), result.getLastClose());
@@ -64,52 +67,6 @@ public class SimpleStratagyTest extends SpringTest {
             indexSets.add(indexSet);
         }
         assertEquals(new BigDecimal("50"), simpleStratagy.intersect(indexSets));
-    }
-
-    @Test
-    public void testFetchIndex() {
-        //insert 60 records includes nulls
-        StockIndexInfo info = new StockIndexInfo();
-        info.setId("SH600519");
-        for (int count = 1; count <= 60; count++) {
-            if (count % 5 == 0) {
-                //insert null value on that day
-                continue;
-            }
-            StockIndexSet indexSet = StockIndexSet.of(today.minusDays(count));
-            indexSet.setClose(new BigDecimal(count));
-            info.addPriceIndex(indexSet);
-        }
-        repository.update(info);
-
-        StockIndexInfo stockIndexInfo = simpleStratagy.fetchIndex(today, "SH600519", 10);
-        Map<LocalDate, StockIndexSet> indexSets = stockIndexInfo.getIndices();
-        assertEquals(16, indexSets.size());
-        assertEquals(true, indexSets.containsKey(LocalDate.of(2018, 7, 10)));
-        assertEquals(true, indexSets.containsKey(LocalDate.of(2018, 7, 9)));
-        assertEquals(true, indexSets.containsKey(LocalDate.of(2018, 7, 8)));
-        assertEquals(true, indexSets.containsKey(LocalDate.of(2018, 7, 7)));
-        assertEquals(true, indexSets.containsKey(LocalDate.of(2018, 7, 5)));
-        assertEquals(true, indexSets.containsKey(LocalDate.of(2018, 7, 4)));
-        assertEquals(true, indexSets.containsKey(LocalDate.of(2018, 7, 3)));
-        assertEquals(true, indexSets.containsKey(LocalDate.of(2018, 7, 2)));
-        assertEquals(true, indexSets.containsKey(LocalDate.of(2018, 6, 30)));
-        assertEquals(true, indexSets.containsKey(LocalDate.of(2018, 6, 29)));
-        assertEquals(true, indexSets.containsKey(LocalDate.of(2018, 6, 28)));
-        assertEquals(true, indexSets.containsKey(LocalDate.of(2018, 6, 27)));
-        assertEquals(true, indexSets.containsKey(LocalDate.of(2018, 6, 25)));
-        assertEquals(true, indexSets.containsKey(LocalDate.of(2018, 6, 24)));
-        assertEquals(true, indexSets.containsKey(LocalDate.of(2018, 6, 23)));
-        assertEquals(true, indexSets.containsKey(LocalDate.of(2018, 6, 22)));
-    }
-
-    /**
-     * <b>Note:</b> this test takes more than 1 hour
-     */
-//    @Test
-    public void testFetchIndex2() {
-        StockIndexInfo stockIndexInfo = simpleStratagy.fetchIndex(today, "SH600520", 10);
-        assertEquals(0, stockIndexInfo.getIndices().size());
     }
 
     @After
