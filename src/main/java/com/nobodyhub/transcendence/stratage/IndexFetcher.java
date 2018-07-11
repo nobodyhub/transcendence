@@ -9,8 +9,6 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 
-import static com.nobodyhub.transcendence.common.Tconst.CN_STOCK_START;
-
 /**
  * @author yan_h
  * @since 2018/7/12
@@ -41,7 +39,7 @@ public class IndexFetcher {
             }
             indexInfo.merge(repository.query(query));
             nBatch++;
-            if (date.minusDays(batchEnd).isBefore(CN_STOCK_START)) {
+            if (date.minusDays(batchEnd).isBefore(startDate)) {
                 break;
             }
         }
