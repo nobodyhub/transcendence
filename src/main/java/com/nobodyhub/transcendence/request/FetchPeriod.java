@@ -7,6 +7,8 @@ import java.time.ZoneId;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import static com.nobodyhub.transcendence.common.Tconst.CN_STOCK_START;
+
 /**
  * Data fetch period
  * start from {@link this#start}(inclusive) to {@link this#end} (inclusive)
@@ -15,11 +17,6 @@ import java.util.NoSuchElementException;
  * @since 2018/6/29
  */
 public class FetchPeriod implements Iterator<FetchPeriod> {
-    /**
-     * start of stock market in China
-     */
-    protected static final LocalDate CN_STOCK_START = LocalDate.of(1990, 12, 19);
-
     /**
      * start of fetch period
      */

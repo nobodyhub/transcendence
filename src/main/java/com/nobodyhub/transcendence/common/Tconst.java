@@ -3,6 +3,7 @@ package com.nobodyhub.transcendence.common;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 /**
@@ -18,4 +19,9 @@ public final class Tconst {
      */
     public static final DateTimeFormatter dateFormatter
             = DateTimeFormatter.ofPattern("yyyyMMdd");
+
+    /**
+     * start of stock market in China
+     */
+    public static final LocalDate CN_STOCK_START = LocalDate.of(1990, 12, 19);
 }

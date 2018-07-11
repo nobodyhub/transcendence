@@ -11,6 +11,8 @@ import java.math.MathContext;
 import java.time.LocalDate;
 import java.util.List;
 
+import static com.nobodyhub.transcendence.common.Tconst.CN_STOCK_START;
+
 /**
  * 一个简单的交易策略
  * 如果五日均线由下而上穿过20日均线, 为买点
@@ -109,6 +111,9 @@ public class SimpleStratagy implements Stratagy {
             }
             indexInfo.merge(repository.query(query));
             nBatch++;
+            if (date.minusDays(batchEnd).isBefore(CN_STOCK_START)) {
+                break;
+            }
         }
         return indexInfo;
     }
