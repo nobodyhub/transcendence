@@ -1,5 +1,6 @@
 package com.nobodyhub.transcendence.request;
 
+import com.nobodyhub.transcendence.common.Tconst;
 import org.junit.Test;
 
 import java.time.LocalDate;
@@ -14,7 +15,7 @@ public class FetchPeriodTest {
     @Test
     public void testOf() {
         FetchPeriod fetchPeriod = FetchPeriod.of(FetchSize.ALL);
-        assertEquals(FetchPeriod.CN_STOCK_START, fetchPeriod.getStart());
+        assertEquals(Tconst.CN_STOCK_START, fetchPeriod.getStart());
         assertEquals(LocalDate.now(), fetchPeriod.getEnd());
 
         fetchPeriod = FetchPeriod.of(FetchSize.YEAR);
