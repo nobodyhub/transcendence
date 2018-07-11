@@ -1,4 +1,4 @@
-package com.nobodyhub.transcendence.request;
+package com.nobodyhub.transcendence;
 
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -8,6 +8,6 @@ import org.springframework.context.annotation.Configuration;
  * @since 2018/6/15
  */
 @Configuration
-@ComponentScan(basePackages = "com.nobodyhub.transcendence.request")
-public class RequestConfig {
+@ComponentScan(basePackages = "com.nobodyhub.transcendence")
+public class ApplicationConfig {
 }

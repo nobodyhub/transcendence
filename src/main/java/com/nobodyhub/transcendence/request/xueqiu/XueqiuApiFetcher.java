@@ -2,10 +2,10 @@ package com.nobodyhub.transcendence.request.xueqiu;
 
 import com.datastax.driver.core.Cluster;
 import com.google.common.collect.Lists;
+import com.nobodyhub.transcendence.ApplicationConfig;
 import com.nobodyhub.transcendence.repository.CassandraConfig;
 import com.nobodyhub.transcendence.repository.model.StockBasicInfo;
 import com.nobodyhub.transcendence.repository.rowdata.RowDataRepository;
-import com.nobodyhub.transcendence.request.RequestConfig;
 import com.nobodyhub.transcendence.request.xueqiu.v5.XueqiuDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
  */
 @SpringBootApplication
 @Import({CassandraConfig.class,
-        RequestConfig.class})
+        ApplicationConfig.class})
 public class XueqiuApiFetcher implements CommandLineRunner {
     @Autowired
     private XueqiuDataSource dataSource;
