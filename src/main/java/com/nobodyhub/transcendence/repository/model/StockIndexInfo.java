@@ -1,5 +1,6 @@
 package com.nobodyhub.transcendence.repository.model;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.nobodyhub.transcendence.repository.model.abstr.Entity;
 import com.nobodyhub.transcendence.repository.model.annotation.ColumnFamily;
@@ -45,12 +46,18 @@ public class StockIndexInfo extends Entity<StockIndexInfo> {
     }
 
     /**
-     * Get {@link this#indices} as a list from latest to the ealiest
+     * Get {@link this#indices} as a list from latest to the ealiest, before the given <code>date</code>
      *
+     * @param date given end date(not included)
      * @return sorted list of index
      */
-    public List<StockIndexSet> getIndexList() {
-        return indices.values().stream()
+    public List<StockIndexSet> getIndexList(LocalDate date) {
+        List<StockIndexSet> stockIndexSets = Lists.newArrayList();
+        indices.keySet().stream()
+                .filter(key -> key.isBefore(date))
+                .forEach(key -> stockIndexSets.add(indices.get(key)));
+        // sort from latest to the ealiest
+        return stockIndexSets.stream()
                 .sorted((o1, o2) -> -1 * o1.getDate().compareTo(o2.getDate()))
                 .collect(Collectors.toList());
     }
