@@ -3,6 +3,7 @@ package com.nobodyhub.transcendence.stratage;
 import com.nobodyhub.transcendence.repository.model.StockIndexInfo;
 import com.nobodyhub.transcendence.repository.model.StockIndexSet;
 import com.nobodyhub.transcendence.repository.rowdata.RowDataRepository;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -18,6 +19,7 @@ public class IndexFetcher {
     @Autowired
     private RowDataRepository repository;
 
+    @Getter
     @Value("#{T(java.time.LocalDate).parse('${stratagy.fetch.start}')}")
     private LocalDate startDate;
 
