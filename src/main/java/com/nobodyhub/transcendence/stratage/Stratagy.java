@@ -30,6 +30,13 @@ public abstract class Stratagy {
                                            LocalDate date);
 
     /**
+     * The minimun valid index data to perform analyze
+     *
+     * @return
+     */
+    public abstract int nIndexRequired();
+
+    /**
      * Register the {@link this} into {@link StratagyExecutor}
      */
     @PostConstruct

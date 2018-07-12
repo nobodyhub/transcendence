@@ -29,7 +29,7 @@ public class SimpleStratagy extends Stratagy {
                                   LocalDate date) {
         StratagyResult result = StratagyResult.of(date);
         List<StockIndexSet> indexSets = indexInfo.getIndexList(date);
-        if (indexInfo.getIndices().size() >= 20) {
+        if (indexInfo.getIndices().size() >= nIndexRequired()) {
             BigDecimal intersect = intersect(indexSets);
             StockIndexSet lastIndex = indexSets.get(0);
             BigDecimal avg5Diff = intersect.subtract(lastIndex.getMa5());
@@ -52,6 +52,11 @@ public class SimpleStratagy extends Stratagy {
             }
         }
         return result;
+    }
+
+    @Override
+    public int nIndexRequired() {
+        return 20;
     }
 
     /**
