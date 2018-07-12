@@ -48,7 +48,7 @@ public class StratagyExecutorTest extends SpringTest {
             info.addPriceIndex(indexSet);
         }
         repository.update(info);
-        List<StratagyResult> results = stratagyExecutor.start(today, "SH600519");
+        List<StratagyResult> results = stratagyExecutor.start(info, today);
         assertEquals(1, results.size());
         TestCase.assertEquals(new BigDecimal("50"), results.get(0).getBuyPrice());
         TestCase.assertEquals(null, results.get(0).getSellPrice());

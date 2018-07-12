@@ -1,6 +1,7 @@
 package com.nobodyhub.transcendence.stratage;
 
 import com.google.common.collect.Lists;
+import com.nobodyhub.transcendence.repository.model.StockIndexInfo;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -23,15 +24,16 @@ public class StratagyExecutor {
      * Start the execution of the stratagy
      * No further changes on {@link this#stratagies} is accepted
      *
+     * @param stockIndexInfo
      * @param date
-     * @param id
      * @return
      */
-    public List<StratagyResult> start(LocalDate date, String id) {
+    public List<StratagyResult> start(StockIndexInfo stockIndexInfo,
+                                      LocalDate date) {
         List<Stratagy> stratagyList = Collections.unmodifiableList(stratagies);
         List<StratagyResult> stratagyResults = Lists.newArrayList();
         for (Stratagy stratagy : stratagyList) {
-            stratagyResults.add(stratagy.analyze(date, id));
+            stratagyResults.add(stratagy.analyze(stockIndexInfo, date));
         }
         return stratagyResults;
     }

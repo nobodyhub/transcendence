@@ -1,5 +1,6 @@
 package com.nobodyhub.transcendence.stratage;
 
+import com.nobodyhub.transcendence.repository.model.StockIndexInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
@@ -21,11 +22,12 @@ public abstract class Stratagy {
     /**
      * Execute stratage analysiss
      *
-     * @param date the date before which the transaction closed
-     * @param id   stock id, e.g., SH600519
+     * @param stockIndexInfo the stock index info to be analyzed
+     * @param date           the date before which data will be analyzed
      * @return analysis result
      */
-    public abstract StratagyResult analyze(LocalDate date, String id);
+    public abstract StratagyResult analyze(StockIndexInfo stockIndexInfo,
+                                           LocalDate date);
 
     /**
      * Register the {@link this} into {@link StratagyExecutor}
