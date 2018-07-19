@@ -1,4 +1,4 @@
-package com.nobodyhub.transcendence.stratage;
+package com.nobodyhub.transcendence.analyzer;
 
 import com.nobodyhub.transcendence.repository.model.StockIndexInfo;
 import org.springframework.beans.factory.annotation.Autowired;

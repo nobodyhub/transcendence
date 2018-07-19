@@ -1,4 +1,4 @@
-package com.nobodyhub.transcendence.stratage;
+package com.nobodyhub.transcendence.analyzer;
 
 import lombok.AccessLevel;
 import lombok.Data;

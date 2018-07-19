@@ -13,4 +13,18 @@
 
     <name>Transcendence Data Analyzer</name>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.nobodyhub</groupId>
+            <artifactId>transcendence-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.nobodyhub</groupId>
+            <artifactId>transcendence-data-repository</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>
+    </dependencies>
 </project>

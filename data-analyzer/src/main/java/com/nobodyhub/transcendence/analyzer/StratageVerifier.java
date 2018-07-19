@@ -1,4 +1,4 @@
-package com.nobodyhub.transcendence.stratage;
+package com.nobodyhub.transcendence.analyzer;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;

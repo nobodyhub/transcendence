@@ -1,6 +1,5 @@
-package com.nobodyhub.transcendence.stratage;
+package com.nobodyhub.transcendence.analyzer;
 
-import com.nobodyhub.transcendence.SpringTest;
 import com.nobodyhub.transcendence.repository.model.StockIndexInfo;
 import com.nobodyhub.transcendence.repository.model.StockIndexSet;
 import com.nobodyhub.transcendence.repository.rowdata.RowDataRepository;

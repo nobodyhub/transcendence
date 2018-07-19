@@ -1,4 +1,4 @@
-package com.nobodyhub.transcendence.stratage;
+package com.nobodyhub.transcendence.analyzer;
 
 import com.nobodyhub.transcendence.repository.model.StockIndexInfo;
 import com.nobodyhub.transcendence.repository.model.StockIndexSet;
