@@ -78,6 +78,7 @@ public final class RowData {
      * @param field
      * @param entity
      */
+    @SuppressWarnings("unchecked")
     public void fillField(Field field, Entity entity) {
         try {
             Id idAnno = field.getAnnotation(Id.class);
@@ -183,6 +184,7 @@ public final class RowData {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private static void parseMapFieldValue(RowData rowData,
                                            Object object,
                                            Field field) throws IllegalAccessException {
