@@ -1,12 +1,12 @@
-package com.nobodyhub.transcendence.request.xueqiu;
+package com.nobodyhub.transcendence.fetcher.xueqiu;
 
 import com.datastax.driver.core.Cluster;
 import com.google.common.collect.Lists;
 import com.nobodyhub.transcendence.ApplicationConfig;
+import com.nobodyhub.transcendence.fetcher.xueqiu.v5.XueqiuDataSource;
 import com.nobodyhub.transcendence.repository.CassandraConfig;
 import com.nobodyhub.transcendence.repository.model.StockBasicInfo;
 import com.nobodyhub.transcendence.repository.rowdata.RowDataRepository;
-import com.nobodyhub.transcendence.request.xueqiu.v5.XueqiuDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;

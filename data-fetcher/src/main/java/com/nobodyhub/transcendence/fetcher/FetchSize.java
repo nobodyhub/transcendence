@@ -1,4 +1,4 @@
-package com.nobodyhub.transcendence.request;
+package com.nobodyhub.transcendence.fetcher;
 
 /**
  * The total size to be fetched from data source

@@ -1,4 +1,4 @@
-package com.nobodyhub.transcendence.request.xueqiu.v5;
+package com.nobodyhub.transcendence.fetcher.xueqiu.v5;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.nobodyhub.transcendence.repository.model.StockIndexInfo;

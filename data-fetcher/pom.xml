@@ -14,7 +14,10 @@
     <name>Transcendence Data Fetcher</name>
 
     <dependencies>
-
+        <dependency>
+            <groupId>com.nobodyhub</groupId>
+            <artifactId>transcendence-data-repository</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>

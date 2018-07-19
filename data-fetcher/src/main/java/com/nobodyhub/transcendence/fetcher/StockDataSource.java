@@ -1,4 +1,4 @@
-package com.nobodyhub.transcendence.request;
+package com.nobodyhub.transcendence.fetcher;
 
 import java.io.IOException;
 import java.util.List;

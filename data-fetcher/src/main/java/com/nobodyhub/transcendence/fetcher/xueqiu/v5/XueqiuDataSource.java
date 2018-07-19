@@ -1,12 +1,12 @@
-package com.nobodyhub.transcendence.request.xueqiu.v5;
+package com.nobodyhub.transcendence.fetcher.xueqiu.v5;
 
 import com.google.common.collect.Sets;
+import com.nobodyhub.transcendence.fetcher.FetchPeriod;
+import com.nobodyhub.transcendence.fetcher.FetchSize;
+import com.nobodyhub.transcendence.fetcher.HttpClient;
+import com.nobodyhub.transcendence.fetcher.StockDataSource;
 import com.nobodyhub.transcendence.repository.model.StockBasicInfo;
 import com.nobodyhub.transcendence.repository.rowdata.RowDataRepository;
-import com.nobodyhub.transcendence.request.FetchPeriod;
-import com.nobodyhub.transcendence.request.FetchSize;
-import com.nobodyhub.transcendence.request.HttpClient;
-import com.nobodyhub.transcendence.request.StockDataSource;
 import okhttp3.HttpUrl;
 import okhttp3.Request;
 import org.slf4j.Logger;

@@ -1,4 +1,4 @@
-package com.nobodyhub.transcendence.request;
+package com.nobodyhub.transcendence.fetcher;
 
 import com.nobodyhub.transcendence.common.Tconst;
 import org.junit.Test;

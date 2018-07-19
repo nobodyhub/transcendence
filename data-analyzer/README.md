@@ -3,6 +3,7 @@
 Transcendence Data Analyzer
 
 ## Required Properties
+
 |Property|Remark|Example|
 |:------:|:----:|:-----:|
 |cassandra.host|List of contact points for Cassandra, required by `transcendence-data-repository`|192.168.1.75,192.168.1.73|

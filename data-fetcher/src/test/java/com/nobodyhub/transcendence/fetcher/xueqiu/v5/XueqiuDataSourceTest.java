@@ -1,4 +1,4 @@
-package com.nobodyhub.transcendence.request.xueqiu.v5;
+package com.nobodyhub.transcendence.fetcher.xueqiu.v5;
 
 import com.google.common.collect.Lists;
 import com.nobodyhub.transcendence.SpringTest;

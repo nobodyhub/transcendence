@@ -1,4 +1,4 @@
-package com.nobodyhub.transcendence.request;
+package com.nobodyhub.transcendence.fetcher;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
