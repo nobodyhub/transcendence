@@ -15,6 +15,10 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.nobodyhub</groupId>
+            <artifactId>transcendence-common</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.datastax.cassandra</groupId>
             <artifactId>cassandra-driver-core</artifactId>
         </dependency>

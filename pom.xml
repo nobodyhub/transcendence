@@ -13,6 +13,7 @@
     <description>Finance Analysis</description>
 
     <modules>
+        <module>common</module>
         <module>data-fetcher</module>
         <module>data-api</module>
         <module>data-analyzer</module>
@@ -21,13 +22,38 @@
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spring.version>5.0.5.RELEASE</spring.version>
         <jackson.version>2.9.5</jackson.version>
         <logback.version>1.2.3</logback.version>
+        <transcendence.version>1.0-SNAPSHOT</transcendence.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <!--transcendence modules-->
+            <dependency>
+                <groupId>com.nobodyhub</groupId>
+                <artifactId>transcendence-common</artifactId>
+                <version>${transcendence.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.nobodyhub</groupId>
+                <artifactId>transcendence-data-fetcher</artifactId>
+                <version>${transcendence.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.nobodyhub</groupId>
+                <artifactId>transcendence-data-api</artifactId>
+                <version>${transcendence.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.nobodyhub</groupId>
+                <artifactId>transcendence-data-analyzer</artifactId>
+                <version>${transcendence.version}</version>
+            </dependency>
+
+            <!--3rd-party-->
             <dependency>
                 <groupId>com.datastax.cassandra</groupId>
                 <artifactId>cassandra-driver-core</artifactId>
