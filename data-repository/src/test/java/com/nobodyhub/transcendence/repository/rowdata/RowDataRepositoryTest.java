@@ -1,6 +1,6 @@
 package com.nobodyhub.transcendence.repository.rowdata;
 
-import com.nobodyhub.transcendence.SpringTest;
+import com.nobodyhub.transcendence.repository.SpringTest;
 import com.nobodyhub.transcendence.repository.model.StockBasicInfo;
 import com.nobodyhub.transcendence.repository.model.StockIndexInfo;
 import com.nobodyhub.transcendence.repository.model.StockIndexSet;

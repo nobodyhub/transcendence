@@ -5,6 +5,7 @@ import com.datastax.driver.core.Session;
 import com.datastax.driver.core.SocketOptions;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -12,6 +13,7 @@ import org.springframework.context.annotation.Configuration;
  * @since 2018/6/10
  */
 @Configuration
+@ComponentScan
 public class CassandraConfig {
     @Value("${cassandra.host}")
     private String[] host;

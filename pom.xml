@@ -14,6 +14,7 @@
 
     <modules>
         <module>common</module>
+        <module>data-repository</module>
         <module>data-fetcher</module>
         <module>data-api</module>
         <module>data-analyzer</module>
@@ -35,6 +36,11 @@
             <dependency>
                 <groupId>com.nobodyhub</groupId>
                 <artifactId>transcendence-common</artifactId>
+                <version>${transcendence.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.nobodyhub</groupId>
+                <artifactId>transcendence-data-repository</artifactId>
                 <version>${transcendence.version}</version>
             </dependency>
             <dependency>
