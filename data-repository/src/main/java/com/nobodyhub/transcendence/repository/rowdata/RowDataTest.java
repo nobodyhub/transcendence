@@ -21,7 +21,7 @@ import static org.junit.Assert.assertEquals;
 public class RowDataTest {
     private StockBasicInfo stockBasicInfo;
     private StockIndexInfo stockIndexInfo;
-    private StockIndexSet indice;
+
 
     @Before
     public void setUp() {
@@ -31,7 +31,7 @@ public class RowDataTest {
 
         stockIndexInfo = new StockIndexInfo();
         stockIndexInfo.setId("sh0000001");
-        indice = StockIndexSet.of(LocalDate.of(2018, 6, 15));
+        StockIndexSet indice = StockIndexSet.of(LocalDate.of(2018, 6, 15));
         indice.setVolume(new BigDecimal("12039.232"));
         indice.setOpen(new BigDecimal("129.22"));
         stockIndexInfo.addPriceIndex(indice);
