@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>transcendence-data-repository</artifactId>
-
+    <name>Transcendence Data Repository</name>
     <description>Data Accessor for Cassandra Repository</description>
 
     <dependencies>
