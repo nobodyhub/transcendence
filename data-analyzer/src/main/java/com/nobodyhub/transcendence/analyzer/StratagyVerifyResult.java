@@ -25,7 +25,8 @@ public class StratagyVerifyResult {
      * @return
      */
     public BigDecimal getTotalProfit() {
-        return profits.stream().reduce(BigDecimal::add).get()
-                .subtract(losses.stream().reduce(BigDecimal::add).get());
+        BigDecimal profit = profits.stream().reduce(BigDecimal::add).orElse(BigDecimal.ZERO);
+        BigDecimal loss = losses.stream().reduce(BigDecimal::add).orElse(BigDecimal.ZERO);
+        return profit.subtract(loss);
     }
 }
